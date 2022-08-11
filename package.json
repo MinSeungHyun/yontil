@@ -1,21 +1,15 @@
 {
-  "name": "chrome-extension-typescript-starter",
-  "version": "1.0.0",
-  "description": "chrome-extension-typescript-starter",
+  "name": "yontil",
+  "version": "0.1",
+  "description": "Yonsei Utils",
   "main": "index.js",
   "scripts": {
-    "watch": "webpack --config webpack/webpack.dev.js --watch",
-    "build": "webpack --config webpack/webpack.prod.js",
-    "clean": "rimraf dist",
-    "test": "npx jest",
-    "style": "prettier --write \"src/**/*.{ts,tsx}\""
+    "dev": "webpack --config webpack/webpack.dev.js --watch",
+    "build": "rm -r dist; webpack --config webpack/webpack.prod.js",
+    "format": "prettier --write \"./**/*\""
   },
   "author": "",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/chibat/chrome-extension-typescript-starter.git"
-  },
   "dependencies": {
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
@@ -28,7 +22,7 @@
     "copy-webpack-plugin": "^9.0.1",
     "glob": "^7.1.6",
     "jest": "^27.2.1",
-    "prettier": "^2.2.1",
+    "prettier": "^2.7.1",
     "rimraf": "^3.0.2 ",
     "ts-jest": "^27.0.5",
     "ts-loader": "^8.0.0",
