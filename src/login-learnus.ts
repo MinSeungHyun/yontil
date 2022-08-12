@@ -5,7 +5,7 @@ import { JSDOM } from 'jsdom'
 const LEARNUS_URL = 'https://www.learnus.org/'
 const YONSEI_API_URL = 'https://infra.yonsei.ac.kr/'
 
-const loginLearnUs = async (id: string, pw: string) => {
+const loginLearnUs = async (id: string, pw: string): Promise<string> => {
   // Request 1
   const res1 = await axios.get(LEARNUS_URL)
   const session = cookie.parse(res1.headers['set-cookie']?.at(0) ?? '')[
