@@ -1,19 +1,38 @@
 import axios from 'axios'
-import cookie from 'cookie'
-import { JSDOM } from 'jsdom'
+import fetchAdapter from '@vespaiach/axios-fetch-adapter'
+import * as htmlparser2 from 'htmlparser2'
 
 const LEARNUS_URL = 'https://www.learnus.org/'
 const YONSEI_API_URL = 'https://infra.yonsei.ac.kr/'
+const loginCycleMinutes = 60
 
-const loginLearnUs = async (id: string, pw: string): Promise<string> => {
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  const storage = await chrome.storage.session.get()
+  if (
+    new Date(storage.lastLogin) >
+      new Date(Date.now() - 1000 * 60 * loginCycleMinutes) ||
+    changeInfo.status !== 'loading' ||
+    !tab.url?.includes('learnus.org')
+  ) {
+    return
+  }
+
+  chrome.cookies.remove({ url: LEARNUS_URL, name: 'MOODLE_SESSSION' })
+  chrome.cookies.remove({ url: YONSEI_API_URL, name: 'JSESSIONID_SSO' })
+
+  await loginLearnUs('', '')
+
+  chrome.storage.session.set({ lastLogin: new Date().toString() })
+  chrome.tabs.reload(tabId)
+})
+
+const loginLearnUs = async (id: string, pw: string): Promise<void> => {
+  const instacne = axios.create({
+    adapter: fetchAdapter,
+  })
+
   // Request 1
-  const res1 = await axios.get(LEARNUS_URL)
-  const session = cookie.parse(res1.headers['set-cookie']?.at(0) ?? '')[
-    'MoodleSession'
-  ]
-
-  // Request 2
-  const res2 = await axios.post(
+  const res1 = await instacne.post(
     `${LEARNUS_URL}passni/sso/coursemosLogin.php`,
     {
       data: {
@@ -22,21 +41,19 @@ const loginLearnUs = async (id: string, pw: string): Promise<string> => {
         username: id,
         password: pw,
       },
-    },
-    { headers: { Cookie: `MoodleSession=${session}` } }
+    }
   )
-  const dom = new JSDOM(res2.data)
-  const s1 = getValueFromInputElement(dom, 'S1')
+  const values1 = parseInputValues(res1.data)
 
-  // Request 3
-  const res3 = await axios.post(
+  // Request 2
+  const res2 = await instacne.post(
     `${YONSEI_API_URL}sso/PmSSOService`,
     new URLSearchParams({
       app_id: 'ednetYonsei',
       retUrl: 'https://www.learnus.org',
       failUrl: 'https://www.learnus.org/login/index.php',
       baseUrl: 'https://www.learnus.org',
-      S1: s1,
+      S1: values1.get('S1') ?? '',
       loginUrl: 'https://www.learnus.org/passni/sso/coursemosLogin.php',
       ssoGubun: 'Login',
       refererUrl: 'https://www.learnus.org',
@@ -47,15 +64,12 @@ const loginLearnUs = async (id: string, pw: string): Promise<string> => {
       password: pw,
     })
   )
-  const jSessionId = cookie.parse(res3.headers['set-cookie']?.at(3) ?? '')[
-    'JSESSIONID_SSO'
-  ]
-  const dom2 = new JSDOM(res3.data)
-  const ssoChallenge = getValueFromInputElement(dom2, 'ssoChallenge')
-  const keyModules = getValueFromInputElement(dom2, 'keyModulus')
+  const values2 = parseInputValues(res2.data)
+  const ssoChallenge = values2.get('ssoChallenge') ?? ''
+  const keyModulus = values2.get('keyModulus') ?? ''
 
-  // Request 4
-  const res4 = await axios.post(
+  // Request 3
+  const res3 = await instacne.post(
     `${LEARNUS_URL}passni/sso/coursemosLogin.php`,
     new URLSearchParams({
       app_id: 'ednetYonsei',
@@ -67,24 +81,18 @@ const loginLearnUs = async (id: string, pw: string): Promise<string> => {
       loginType: 'invokeID',
       returnCode: '',
       returnMessage: '',
-      keyModulus: keyModules,
+      keyModulus: keyModulus,
       keyExponent: '10001',
       ssoGubun: 'Login',
       refererUrl: 'https://www.learnus.org/',
       test: 'SSOAuthLogin',
       username: id,
       password: pw,
-    }),
-    {
-      headers: {
-        Cookie: `MoodleSession=${session}`,
-      },
-    }
+    })
   )
-  const dom3 = new JSDOM(res4.data)
-  const s1Second = getValueFromInputElement(dom3, 'S1')
+  const values3 = parseInputValues(res3.data)
 
-  // Request 5
+  // Request 4
   const json = JSON.stringify({
     userid: id,
     userpw: pw,
@@ -92,16 +100,16 @@ const loginLearnUs = async (id: string, pw: string): Promise<string> => {
   })
   const RSAKey = require('./utils/rsa.js')
   const rsa = new RSAKey()
-  rsa.setPublic(keyModules, '10001')
+  rsa.setPublic(keyModulus, '10001')
   const e2 = rsa.encrypt(json)
-  const res5 = await axios.post(
+  const res4 = await instacne.post(
     `${YONSEI_API_URL}sso/PmSSOAuthService`,
     new URLSearchParams({
       app_id: 'ednetYonsei',
       retUrl: 'https://www.learnus.org',
       failUrl: 'https://www.learnus.org/login/index.php',
       baseUrl: 'https://www.learnus.org',
-      S1: s1Second,
+      S1: values3.get('S1') ?? '',
       loginUrl: 'https://www.learnus.org/passni/sso/coursemosLogin.php',
       ssoGubun: 'Login',
       refererUrl: 'https://www.learnus.org/',
@@ -110,17 +118,12 @@ const loginLearnUs = async (id: string, pw: string): Promise<string> => {
       E2: e2,
       username: id,
       password: pw,
-    }),
-    { headers: { Cookie: `JSESSIONID_SSO=${jSessionId}` } }
+    })
   )
-  const dom4 = new JSDOM(res5.data)
-  const e3 = getValueFromInputElement(dom4, 'E3')
-  const e4 = getValueFromInputElement(dom4, 'E4')
-  const s2 = getValueFromInputElement(dom4, 'S2')
-  const cltid = getValueFromInputElement(dom4, 'CLTID')
+  const values4 = parseInputValues(res4.data)
 
-  // Request 6
-  const res6 = await axios.post(
+  // Request 5
+  await instacne.post(
     `${LEARNUS_URL}passni/sso/spLoginData.php`,
     new URLSearchParams({
       app_id: 'ednetYonsei',
@@ -128,29 +131,34 @@ const loginLearnUs = async (id: string, pw: string): Promise<string> => {
       failUrl: 'https://www.learnus.org/login/index.php',
       baseUrl: 'https://www.learnus.org',
       loginUrl: 'https://www.learnus.org/passni/sso/coursemosLogin.php',
-      E3: e3,
-      E4: e4,
-      S2: s2,
-      CLTID: cltid,
+      E3: values4.get('E3') ?? '',
+      E4: values4.get('E4') ?? '',
+      S2: values4.get('S2') ?? '',
+      CLTID: values4.get('CLTID') ?? '',
       ssoGubun: 'Login',
       refererUrl: 'https://www.learnus.org/',
       test: 'SSOAuthLogin',
       username: id,
       password: pw,
-    }),
-    { headers: { Cookie: `MoodleSession=${session}` } }
+    })
   )
 
-  // Request 7
-  const res7 = await axios.get(`${LEARNUS_URL}passni/spLoginProcess.php`, {
-    headers: { Cookie: `MoodleSession=${session}` },
-  })
-  return cookie.parse(res7.headers['set-cookie']?.at(0) ?? '')['MoodleSession']
+  // Request 6
+  await instacne.get(`${LEARNUS_URL}passni/spLoginProcess.php`)
 }
 
 export default loginLearnUs
 
-function getValueFromInputElement(dom: JSDOM, id: string) {
-  const input = dom.window.document.getElementById(id) as HTMLInputElement
-  return input.value
+function parseInputValues(html: string) {
+  const values = new Map<string, string>()
+  const parser = new htmlparser2.Parser({
+    onopentag: (name, attrubutes) => {
+      if (name === 'input') {
+        values.set(attrubutes.id, attrubutes.value)
+      }
+    },
+  })
+  parser.write(html)
+  parser.end()
+  return values
 }
