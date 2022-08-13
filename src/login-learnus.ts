@@ -1,18 +1,57 @@
 import axios from 'axios'
 import fetchAdapter from '@vespaiach/axios-fetch-adapter'
 import * as htmlparser2 from 'htmlparser2'
+import { decode, encode } from './utils/encoding'
 
 const LEARNUS_URL = 'https://www.learnus.org/'
 const YONSEI_API_URL = 'https://infra.yonsei.ac.kr/'
 const loginCycleMinutes = 60
 
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+chrome.webRequest.onBeforeRequest.addListener(
+  (details) => {
+    const body = details.requestBody?.formData
+    const username = body?.username?.at(0)
+    const password = body?.password?.at(0)
+
+    if (username && password) {
+      const json = JSON.stringify({
+        username,
+        password,
+      })
+      chrome.storage.sync.set({
+        yontilAuthData: encode(json),
+      })
+    }
+  },
+  {
+    urls: [`${LEARNUS_URL}passni/sso/coursemosLogin.php`],
+  },
+  ['requestBody']
+)
+
+chrome.tabs.onUpdated.addListener(
+  async (
+    tabId: number,
+    changeInfo: chrome.tabs.TabChangeInfo,
+    tab: chrome.tabs.Tab
+  ) => {
+    if (
+      !tab.url?.includes('learnus.org') ||
+      tab.url.includes('learnus.org/login') ||
+      changeInfo.status !== 'loading'
+    ) {
+      return
+    }
+
+    await loginProcess(tabId)
+  }
+)
+
+async function loginProcess(tabId: number) {
   const storage = await chrome.storage.session.get()
   if (
     new Date(storage.lastLogin) >
-      new Date(Date.now() - 1000 * 60 * loginCycleMinutes) ||
-    changeInfo.status !== 'loading' ||
-    !tab.url?.includes('learnus.org')
+    new Date(Date.now() - 1000 * 60 * loginCycleMinutes)
   ) {
     return
   }
@@ -20,11 +59,13 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   chrome.cookies.remove({ url: LEARNUS_URL, name: 'MOODLE_SESSSION' })
   chrome.cookies.remove({ url: YONSEI_API_URL, name: 'JSESSIONID_SSO' })
 
-  await loginLearnUs('', '')
+  const { yontilAuthData } = await chrome.storage.sync.get('yontilAuthData')
+  const { username, password } = JSON.parse(decode(yontilAuthData))
+  await loginLearnUs(username, password)
 
   chrome.storage.session.set({ lastLogin: new Date().toString() })
   chrome.tabs.reload(tabId)
-})
+}
 
 const loginLearnUs = async (id: string, pw: string): Promise<void> => {
   const instacne = axios.create({
