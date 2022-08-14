@@ -4,7 +4,7 @@ import { encode } from './utils/encoding'
 
 const loginCycleMinutes = 59
 
-chrome.runtime.onInstalled.addListener(async (_) => {
+chrome.runtime.onInstalled.addListener((_) => {
   chrome.alarms.create('refreshSession', {
     periodInMinutes: loginCycleMinutes,
     delayInMinutes: 0,
@@ -15,6 +15,10 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === 'refreshSession') {
     await refreshSession()
   }
+})
+
+chrome.windows.onCreated.addListener(async () => {
+  await refreshSession()
 })
 
 chrome.webRequest.onBeforeRequest.addListener(
