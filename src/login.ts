@@ -14,10 +14,10 @@ export const refreshSession = async (): Promise<void> => {
   const { username, password } = JSON.parse(decode(yontilAuthData))
   if (!username || !password) return
 
-  await loginLearnUs(username, password)
+  await login(username, password)
 }
 
-async function loginLearnUs(id: string, pw: string): Promise<void> {
+async function login(id: string, pw: string): Promise<void> {
   const instance = axios.create({
     adapter: fetchAdapter,
   })
@@ -138,7 +138,7 @@ async function loginLearnUs(id: string, pw: string): Promise<void> {
   console.log(await instance.get(`${LEARNUS_URL}passni/spLoginProcess.php`))
 }
 
-export default loginLearnUs
+export default login
 
 function parseInputValues(html: string) {
   const values = new Map<string, string>()

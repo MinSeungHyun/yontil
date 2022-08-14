@@ -1,5 +1,5 @@
 import { LEARNUS_URL } from './const'
-import { refreshSession } from './login-learnus'
+import { refreshSession } from './login'
 import { encode } from './utils/encoding'
 
 const loginCycleMinutes = 59
