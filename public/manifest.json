@@ -9,6 +9,13 @@
     "service_worker": "js/login-learnus.js"
   },
 
-  "permissions": ["cookies", "tabs", "storage", "scripting", "webRequest"],
+  "permissions": [
+    "cookies",
+    "tabs",
+    "storage",
+    "scripting",
+    "webRequest",
+    "alarms"
+  ],
   "host_permissions": ["https://*.learnus.org/*", "https://*.yonsei.ac.kr/*"]
 }

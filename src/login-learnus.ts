@@ -5,7 +5,20 @@ import { decode, encode } from './utils/encoding'
 
 const LEARNUS_URL = 'https://www.learnus.org/'
 const YONSEI_API_URL = 'https://infra.yonsei.ac.kr/'
-const loginCycleMinutes = 60
+const loginCycleMinutes = 59
+
+chrome.runtime.onInstalled.addListener(async (details) => {
+  chrome.alarms.create('refreshSession', {
+    periodInMinutes: loginCycleMinutes,
+    delayInMinutes: 0,
+  })
+})
+
+chrome.alarms.onAlarm.addListener(async (alarm) => {
+  if (alarm.name === 'refreshSession') {
+    await refreshSession()
+  }
+})
 
 chrome.webRequest.onBeforeRequest.addListener(
   (details) => {
@@ -29,51 +42,26 @@ chrome.webRequest.onBeforeRequest.addListener(
   ['requestBody']
 )
 
-chrome.tabs.onUpdated.addListener(
-  async (
-    tabId: number,
-    changeInfo: chrome.tabs.TabChangeInfo,
-    tab: chrome.tabs.Tab
-  ) => {
-    if (
-      !tab.url?.includes('learnus.org') ||
-      tab.url.includes('learnus.org/login') ||
-      changeInfo.status !== 'loading'
-    ) {
-      return
-    }
-
-    await loginProcess(tabId)
-  }
-)
-
-async function loginProcess(tabId: number) {
-  const storage = await chrome.storage.session.get()
-  if (
-    new Date(storage.lastLogin) >
-    new Date(Date.now() - 1000 * 60 * loginCycleMinutes)
-  ) {
-    return
-  }
-
-  chrome.cookies.remove({ url: LEARNUS_URL, name: 'MOODLE_SESSSION' })
-  chrome.cookies.remove({ url: YONSEI_API_URL, name: 'JSESSIONID_SSO' })
+async function refreshSession() {
+  await chrome.cookies.remove({ url: LEARNUS_URL, name: 'MoodleSession' })
+  await chrome.cookies.remove({ url: YONSEI_API_URL, name: 'JSESSIONID_SSO' })
 
   const { yontilAuthData } = await chrome.storage.sync.get('yontilAuthData')
-  const { username, password } = JSON.parse(decode(yontilAuthData))
-  await loginLearnUs(username, password)
+  if (!yontilAuthData) return
 
-  chrome.storage.session.set({ lastLogin: new Date().toString() })
-  chrome.tabs.reload(tabId)
+  const { username, password } = JSON.parse(decode(yontilAuthData))
+  if (!username || !password) return
+
+  await loginLearnUs(username, password)
 }
 
 const loginLearnUs = async (id: string, pw: string): Promise<void> => {
-  const instacne = axios.create({
+  const instance = axios.create({
     adapter: fetchAdapter,
   })
 
   // Request 1
-  const res1 = await instacne.post(
+  const res1 = await instance.post(
     `${LEARNUS_URL}passni/sso/coursemosLogin.php`,
     {
       data: {
@@ -87,7 +75,7 @@ const loginLearnUs = async (id: string, pw: string): Promise<void> => {
   const values1 = parseInputValues(res1.data)
 
   // Request 2
-  const res2 = await instacne.post(
+  const res2 = await instance.post(
     `${YONSEI_API_URL}sso/PmSSOService`,
     new URLSearchParams({
       app_id: 'ednetYonsei',
@@ -110,7 +98,7 @@ const loginLearnUs = async (id: string, pw: string): Promise<void> => {
   const keyModulus = values2.get('keyModulus') ?? ''
 
   // Request 3
-  const res3 = await instacne.post(
+  const res3 = await instance.post(
     `${LEARNUS_URL}passni/sso/coursemosLogin.php`,
     new URLSearchParams({
       app_id: 'ednetYonsei',
@@ -143,7 +131,7 @@ const loginLearnUs = async (id: string, pw: string): Promise<void> => {
   const rsa = new RSAKey()
   rsa.setPublic(keyModulus, '10001')
   const e2 = rsa.encrypt(json)
-  const res4 = await instacne.post(
+  const res4 = await instance.post(
     `${YONSEI_API_URL}sso/PmSSOAuthService`,
     new URLSearchParams({
       app_id: 'ednetYonsei',
@@ -164,7 +152,7 @@ const loginLearnUs = async (id: string, pw: string): Promise<void> => {
   const values4 = parseInputValues(res4.data)
 
   // Request 5
-  await instacne.post(
+  await instance.post(
     `${LEARNUS_URL}passni/sso/spLoginData.php`,
     new URLSearchParams({
       app_id: 'ednetYonsei',
@@ -185,7 +173,7 @@ const loginLearnUs = async (id: string, pw: string): Promise<void> => {
   )
 
   // Request 6
-  await instacne.get(`${LEARNUS_URL}passni/spLoginProcess.php`)
+  console.log(await instance.get(`${LEARNUS_URL}passni/spLoginProcess.php`))
 }
 
 export default loginLearnUs
