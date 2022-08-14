@@ -6,7 +6,7 @@
   "version": "0.1",
 
   "background": {
-    "service_worker": "js/login-learnus.js"
+    "service_worker": "js/background.js"
   },
 
   "permissions": [

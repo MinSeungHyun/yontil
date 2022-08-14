@@ -1,48 +1,10 @@
 import axios from 'axios'
 import fetchAdapter from '@vespaiach/axios-fetch-adapter'
 import * as htmlparser2 from 'htmlparser2'
-import { decode, encode } from './utils/encoding'
+import { decode } from './utils/encoding'
+import { LEARNUS_URL, YONSEI_API_URL } from './const'
 
-const LEARNUS_URL = 'https://www.learnus.org/'
-const YONSEI_API_URL = 'https://infra.yonsei.ac.kr/'
-const loginCycleMinutes = 59
-
-chrome.runtime.onInstalled.addListener(async (details) => {
-  chrome.alarms.create('refreshSession', {
-    periodInMinutes: loginCycleMinutes,
-    delayInMinutes: 0,
-  })
-})
-
-chrome.alarms.onAlarm.addListener(async (alarm) => {
-  if (alarm.name === 'refreshSession') {
-    await refreshSession()
-  }
-})
-
-chrome.webRequest.onBeforeRequest.addListener(
-  (details) => {
-    const body = details.requestBody?.formData
-    const username = body?.username?.at(0)
-    const password = body?.password?.at(0)
-
-    if (username && password) {
-      const json = JSON.stringify({
-        username,
-        password,
-      })
-      chrome.storage.sync.set({
-        yontilAuthData: encode(json),
-      })
-    }
-  },
-  {
-    urls: [`${LEARNUS_URL}passni/sso/coursemosLogin.php`],
-  },
-  ['requestBody']
-)
-
-async function refreshSession() {
+export const refreshSession = async (): Promise<void> => {
   await chrome.cookies.remove({ url: LEARNUS_URL, name: 'MoodleSession' })
   await chrome.cookies.remove({ url: YONSEI_API_URL, name: 'JSESSIONID_SSO' })
 
@@ -55,7 +17,7 @@ async function refreshSession() {
   await loginLearnUs(username, password)
 }
 
-const loginLearnUs = async (id: string, pw: string): Promise<void> => {
+async function loginLearnUs(id: string, pw: string): Promise<void> {
   const instance = axios.create({
     adapter: fetchAdapter,
   })
