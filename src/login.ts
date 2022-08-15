@@ -26,17 +26,14 @@ async function loginLearnUs(id: string, pw: string): Promise<void> {
   const instance = axios.create({ adapter: fetchAdapter })
 
   // Request 1
-  const res1 = await instance.post(
-    `${LEARNUS_URL}passni/sso/coursemosLogin.php`,
-    {
-      data: {
-        ssoGubun: 'Login',
-        type: 'popup_login',
-        username: id,
-        password: pw,
-      },
-    }
-  )
+  const res1 = await instance.post(`${LEARNUS_URL}passni/sso/coursemosLogin.php`, {
+    data: {
+      ssoGubun: 'Login',
+      type: 'popup_login',
+      username: id,
+      password: pw,
+    },
+  })
   const values1 = parseInputValues(res1.data)
 
   // Request 2
