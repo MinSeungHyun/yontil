@@ -28,13 +28,7 @@ chrome.webRequest.onBeforeRequest.addListener(
     const password = body?.password?.at(0)
 
     if (username && password) {
-      const json = JSON.stringify({
-        username,
-        password,
-      })
-      chrome.storage.sync.set({
-        yontilAuthData: encode(json),
-      })
+      saveAuthData(username, password)
     }
   },
   {
@@ -42,3 +36,18 @@ chrome.webRequest.onBeforeRequest.addListener(
   },
   ['requestBody']
 )
+
+chrome.runtime.onMessage.addListener(async (message, _, __) => {
+  if (message.name === 'login') {
+    const { id, pw } = message.data
+    console.log(id, pw)
+    await saveAuthData(id, pw)
+  }
+})
+
+async function saveAuthData(username: string, password: string) {
+  const json = JSON.stringify({ username, password })
+  await chrome.storage.sync.set({
+    yontilAuthData: encode(json),
+  })
+}

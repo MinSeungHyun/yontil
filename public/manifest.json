@@ -9,6 +9,13 @@
     "service_worker": "js/background.js"
   },
 
+  "content_scripts": [
+    {
+      "matches": ["https://infra.yonsei.ac.kr/sso/PmSSOService"],
+      "js": ["js/auth-content.js"]
+    }
+  ],
+
   "permissions": ["cookies", "storage", "webRequest", "alarms"],
   "host_permissions": ["https://*.learnus.org/*", "https://*.yonsei.ac.kr/*"]
 }
