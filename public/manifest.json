@@ -9,13 +9,6 @@
     "service_worker": "js/background.js"
   },
 
-  "permissions": [
-    "cookies",
-    "tabs",
-    "storage",
-    "scripting",
-    "webRequest",
-    "alarms"
-  ],
+  "permissions": ["cookies", "storage", "webRequest", "alarms"],
   "host_permissions": ["https://*.learnus.org/*", "https://*.yonsei.ac.kr/*"]
 }

@@ -2,11 +2,11 @@ import axios from 'axios'
 import fetchAdapter from '@vespaiach/axios-fetch-adapter'
 import * as htmlparser2 from 'htmlparser2'
 import { decode } from './utils/encoding'
-import { LEARNUS_URL, YONSEI_API_URL } from './const'
+import { LEARNUS_URL, PORTAL_URL, INFRA_URL } from './const'
 
 export const refreshSession = async (): Promise<void> => {
   await chrome.cookies.remove({ url: LEARNUS_URL, name: 'MoodleSession' })
-  await chrome.cookies.remove({ url: YONSEI_API_URL, name: 'JSESSIONID_SSO' })
+  await chrome.cookies.remove({ url: INFRA_URL, name: 'JSESSIONID_SSO' })
 
   const { yontilAuthData } = await chrome.storage.sync.get('yontilAuthData')
   if (!yontilAuthData) return
@@ -18,9 +18,12 @@ export const refreshSession = async (): Promise<void> => {
 }
 
 async function login(id: string, pw: string): Promise<void> {
-  const instance = axios.create({
-    adapter: fetchAdapter,
-  })
+  await loginLearnUs(id, pw)
+  await loginPortal()
+}
+
+async function loginLearnUs(id: string, pw: string): Promise<void> {
+  const instance = axios.create({ adapter: fetchAdapter })
 
   // Request 1
   const res1 = await instance.post(
@@ -38,7 +41,7 @@ async function login(id: string, pw: string): Promise<void> {
 
   // Request 2
   const res2 = await instance.post(
-    `${YONSEI_API_URL}sso/PmSSOService`,
+    `${INFRA_URL}sso/PmSSOService`,
     new URLSearchParams({
       app_id: 'ednetYonsei',
       retUrl: 'https://www.learnus.org',
@@ -94,7 +97,7 @@ async function login(id: string, pw: string): Promise<void> {
   rsa.setPublic(keyModulus, '10001')
   const e2 = rsa.encrypt(json)
   const res4 = await instance.post(
-    `${YONSEI_API_URL}sso/PmSSOAuthService`,
+    `${INFRA_URL}sso/PmSSOAuthService`,
     new URLSearchParams({
       app_id: 'ednetYonsei',
       retUrl: 'https://www.learnus.org',
@@ -135,10 +138,63 @@ async function login(id: string, pw: string): Promise<void> {
   )
 
   // Request 6
-  console.log(await instance.get(`${LEARNUS_URL}passni/spLoginProcess.php`))
+  await instance.get(`${LEARNUS_URL}passni/spLoginProcess.php`)
 }
 
-export default login
+async function loginPortal(): Promise<void> {
+  const instance = axios.create({ adapter: fetchAdapter })
+
+  // Request 1
+  const res1 = await instance.post(
+    `${PORTAL_URL}main/SSOLegacy.do`,
+    new URLSearchParams({
+      retUrl: '',
+      failUrl: '',
+      ssoGubun: 'Redirect',
+      test: 'SSOLogin',
+      loginProcUrl: '/main/index.jsp',
+    })
+  )
+  const values1 = parseInputValues(res1.data)
+
+  // Request 2
+  const res2 = await instance.post(
+    `${INFRA_URL}sso/PmSSOService`,
+    new URLSearchParams({
+      app_id: 'nportalYonsei',
+      retUrl: 'https://portal.yonsei.ac.kr:443/main',
+      failUrl: 'https://portal.yonsei.ac.kr:443/main',
+      baseUrl: 'https://portal.yonsei.ac.kr:443',
+      S1: values1.get('S1') ?? '',
+      loginUrl: 'https://portal.yonsei.ac.kr/main/index.jsp',
+      ssoGubun: 'Redirect',
+      refererUrl: 'https://portal.yonsei.ac.kr/main/',
+      test: 'SSOLogin',
+      loginProcUrl: '/main/index.jsp',
+    })
+  )
+  const values2 = parseInputValues(res2.data)
+
+  // Request 3
+  await instance.post(
+    `${PORTAL_URL}main/SSOLegacy.do?pname=spLoginData`,
+    new URLSearchParams({
+      app_id: 'nportalYonsei',
+      retUrl: 'https://portal.yonsei.ac.kr:443/main',
+      failUrl: 'https://portal.yonsei.ac.kr:443/main',
+      baseUrl: 'https://portal.yonsei.ac.kr:443',
+      loginUrl: 'https://portal.yonsei.ac.kr/main/index.jsp',
+      E3: values2.get('E3') ?? '',
+      E4: values2.get('E4') ?? '',
+      S2: values2.get('S2') ?? '',
+      CLTID: values2.get('CLTID') ?? '',
+      ssoGubun: 'Redirect',
+      refererUrl: 'https://portal.yonsei.ac.kr/main',
+      test: 'SSOLogin',
+      loginProcUrl: '/main/index.jsp',
+    })
+  )
+}
 
 function parseInputValues(html: string) {
   const values = new Map<string, string>()
