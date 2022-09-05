@@ -22,6 +22,10 @@
     }
   ],
 
+  "action": {
+    "default_popup": "popup.html"
+  },
+
   "permissions": ["cookies", "storage", "webRequest", "alarms"],
   "host_permissions": ["https://*.learnus.org/*", "https://*.yonsei.ac.kr/*"]
 }
