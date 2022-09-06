@@ -1,6 +1,6 @@
 {
   "name": "yontil",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Yonsei Utils",
   "main": "index.js",
   "scripts": {
