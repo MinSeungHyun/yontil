@@ -8,7 +8,7 @@ export const refreshSession = async (): Promise<void> => {
   await chrome.cookies.remove({ url: LEARNUS_URL, name: 'MoodleSession' })
   await chrome.cookies.remove({ url: INFRA_URL, name: 'JSESSIONID_SSO' })
 
-  const { yontilAuthData } = await chrome.storage.sync.get('yontilAuthData')
+  const { yontilAuthData } = await chrome.storage.local.get('yontilAuthData')
   if (!yontilAuthData) return
 
   const { username, password } = JSON.parse(decode(yontilAuthData))

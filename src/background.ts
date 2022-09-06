@@ -40,14 +40,18 @@ chrome.webRequest.onBeforeRequest.addListener(
 chrome.runtime.onMessage.addListener(async (message, _, __) => {
   if (message.name === 'login') {
     const { id, pw } = message.data
-    console.log(id, pw)
     await saveAuthData(id, pw)
   }
 })
 
 async function saveAuthData(username: string, password: string) {
   const json = JSON.stringify({ username, password })
-  await chrome.storage.sync.set({
+  await chrome.storage.local.set({
     yontilAuthData: encode(json),
   })
 }
+
+// 이전에 synced storage에 저장되었던 정보를 지우기 위함
+chrome.runtime.onInstalled.addListener(async (details) => {
+  await chrome.storage.sync.clear()
+})
