@@ -1,70 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Yontil</title>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
-
-      body {
-        width: 300px;
-        font-size: 14px;
-        font-family: 'Noto Sans KR', sans-serif;
-        font-weight: 300;
-        margin: 12px;
-        background-color: #f6f6f6;
-        color: #151515;
-      }
-      h1 {
-        font-weight: 700;
-        margin: 20px 0;
-        color: #0054e4;
-      }
-      .content {
-        background-color: #ffffff;
-        border-radius: 4px;
-        padding: 14px 20px;
-      }
-      p {
-        margin: 0 0;
-      }
-      a {
-        color: #151515;
-      }
-      .footer {
-        margin-top: 6px;
-        text-align: center;
-      }
-      .footer a {
-        font-size: 10px;
-      }
-    </style>
+    <meta charset="UTF-8">
+    <title>Getting Started Extension's Popup</title>
+    <script src="js/vendor.js"></script>
   </head>
-
   <body>
-    <h1 style="text-align: center">Yontil</h1>
-    <div class="content">
-      <p style="margin-bottom: 10px">
-        <span style="font-weight: 500">지원되는 사이트</span><br /><a href="https://www.learnus.org" target="_blank"
-          >런어스</a
-        >,
-        <a href="https://portal.yonsei.ac.kr" target="_blank">연세포탈</a>
-      </p>
-      <p>
-        <span style="font-weight: 500">사용 방법</span><br />설치후 런어스 또는 연세포탈에 처음 한번만 로그인을 해주면
-        됩니다.
-      </p>
-    </div>
-    <div class="footer">
-      <a href="https://github.com/minseunghyun/yontil" target="_blank" style="margin-right: 6px">Github</a>
-      <a
-        href="https://chrome.google.com/webstore/detail/yontil%EC%97%B0%ED%8B%B8-yonsei-utils/odenknojibaccnicjcekjbkkodpfigln"
-        target="_blank"
-      >
-        Chrome Web Store
-      </a>
-    </div>
+    <div id="root"></div>
+    <script src="js/popup.js"></script>
   </body>
 </html>
+
