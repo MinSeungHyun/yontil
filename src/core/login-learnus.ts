@@ -1,15 +1,23 @@
 import { jsbn, pki } from 'node-forge'
 import { parseInputTagsFromHtml } from '../utils/parse-html-string'
 
-const username = ''
-const password = ''
-
 export async function loginLearnUs(): Promise<void> {
-  const response1 = await fetch(
+  const username = ''
+  const password = ''
+
+  const data1 = await fetch1(username, password)
+  const data2 = await fetch2(data1, username, password)
+  const data3 = await fetch3(data2, username, password)
+  const data4 = await fetch4(data2, data3, username, password)
+  await fetch5(data4, username, password)
+  await fetch6()
+}
+
+async function fetch1(username: string, password: string) {
+  const response = await fetch(
     'https://ys.learnus.org/passni/sso/coursemosLogin.php',
     {
       method: 'POST',
-      mode: 'no-cors',
       body: new URLSearchParams({
         ssoGubun: 'Login',
         logintype: 'sso',
@@ -19,19 +27,23 @@ export async function loginLearnUs(): Promise<void> {
       }),
     }
   )
-  const data = await response1.text()
-  const inputTags1 = parseInputTagsFromHtml(data)
-  console.log('1', inputTags1)
 
-  const response2 = await fetch('https://infra.yonsei.ac.kr/sso/PmSSOService', {
+  return parseInputTagsFromHtml(await response.text())
+}
+
+async function fetch2(
+  data1: Record<string, string>,
+  username: string,
+  password: string
+) {
+  const response = await fetch('https://infra.yonsei.ac.kr/sso/PmSSOService', {
     method: 'POST',
-    mode: 'no-cors',
     body: new URLSearchParams({
       app_id: 'ednetYonsei',
       retUrl: 'https://ys.learnus.org',
       failUrl: 'https://ys.learnus.org/login/index.php',
       baseUrl: 'https://ys.learnus.org',
-      S1: inputTags1['S1'],
+      S1: data1['S1'],
       loginUrl: 'https://ys.learnus.org/passni/sso/coursemosLogin.php',
       ssoGubun: 'Login',
       refererUrl: 'https://ys.learnus.org',
@@ -42,27 +54,31 @@ export async function loginLearnUs(): Promise<void> {
       password,
     }),
   })
-  const data2 = await response2.text()
-  const inputTags2 = parseInputTagsFromHtml(data2)
-  console.log('2', inputTags2)
 
-  const response3 = await fetch(
+  return parseInputTagsFromHtml(await response.text())
+}
+
+async function fetch3(
+  data2: Record<string, string>,
+  username: string,
+  password: string
+) {
+  const response = await fetch(
     'https://ys.learnus.org/passni/sso/coursemosLogin.php',
     {
       method: 'POST',
-      mode: 'no-cors',
       body: new URLSearchParams({
         app_id: 'ednetYonsei',
         retUrl: 'https://ys.learnus.org',
         failUrl: 'https://ys.learnus.org/login/index.php',
         baseUrl: 'https://ys.learnus.org',
         loginUrl: 'https://ys.learnus.org/passni/sso/coursemosLogin.php',
-        ssoChallenge: inputTags2['ssoChallenge'],
+        ssoChallenge: data2['ssoChallenge'],
         loginType: 'invokeID',
         returnCode: '',
         returnMessage: '',
-        keyModulus: inputTags2['keyModulus'],
-        keyExponent: inputTags2['keyExponent'],
+        keyModulus: data2['keyModulus'],
+        keyExponent: data2['keyExponent'],
         ssoGubun: 'Login',
         refererUrl: 'https://ys.learnus.org',
         test: 'SSOAuthLogin',
@@ -71,28 +87,40 @@ export async function loginLearnUs(): Promise<void> {
       }),
     }
   )
-  const data3 = await response3.text()
-  const inputTags3 = parseInputTagsFromHtml(data3)
 
-  const E2 = getE2Value(
-    inputTags2['keyModulus'],
-    inputTags2['keyExponent'],
-    username,
-    password,
-    inputTags2['ssoChallenge']
-  )
+  return parseInputTagsFromHtml(await response.text())
+}
 
-  const response4 = await fetch(
+async function fetch4(
+  data2: Record<string, string>,
+  data3: Record<string, string>,
+  username: string,
+  password: string
+) {
+  const E2Bytes = pki.rsa
+    .setPublicKey(
+      new jsbn.BigInteger(data2['keyModulus'], 16),
+      new jsbn.BigInteger(data2['keyExponent'], 16)
+    )
+    .encrypt(
+      JSON.stringify({
+        userid: username,
+        userpw: password,
+        ssoChallenge: data2['ssoChallenge'],
+      })
+    )
+  const E2 = stringToHex(E2Bytes)
+
+  const response = await fetch(
     'https://infra.yonsei.ac.kr/sso/PmSSOAuthService',
     {
       method: 'POST',
-      mode: 'no-cors',
       body: new URLSearchParams({
         app_id: 'ednetYonsei',
         retUrl: 'https://ys.learnus.org',
         failUrl: 'https://ys.learnus.org/login/index.php',
         baseUrl: 'https://ys.learnus.org',
-        S1: inputTags3['S1'],
+        S1: data3['S1'],
         loginUrl: 'https://ys.learnus.org/passni/sso/coursemosLogin.php',
         ssoGubun: 'Login',
         refererUrl: 'https://ys.learnus.org',
@@ -104,56 +132,38 @@ export async function loginLearnUs(): Promise<void> {
       }),
     }
   )
-  const data4 = await response4.text()
-  const inputTags4 = parseInputTagsFromHtml(data4)
 
-  const response5 = await fetch(
-    'https://ys.learnus.org/passni/sso/spLoginData.php',
-    {
-      method: 'POST',
-      mode: 'no-cors',
-      body: new URLSearchParams({
-        app_id: 'ednetYonsei',
-        retUrl: 'https://ys.learnus.org',
-        failUrl: 'https://ys.learnus.org/login/index.php',
-        baseUrl: 'https://ys.learnus.org',
-        loginUrl: 'https://ys.learnus.org/passni/sso/coursemosLogin.php',
-        E3: inputTags4['E3'],
-        E4: inputTags4['E4'],
-        S2: inputTags4['S2'],
-        CLTID: inputTags4['CLTID'],
-        ssoGubun: 'Login',
-        refererUrl: 'https://ys.learnus.org',
-        test: 'SSOAuthLogin',
-        username,
-        password,
-      }),
-    }
-  )
-  const data5 = await response5.text()
-  const inputTags5 = parseInputTagsFromHtml(data5)
+  return parseInputTagsFromHtml(await response.text())
+}
 
-  await fetch('https://ys.learnus.org/passni/spLoginProcess.php', {
-    mode: 'no-cors',
+async function fetch5(
+  data4: Record<string, string>,
+  username: string,
+  password: string
+) {
+  await fetch('https://ys.learnus.org/passni/sso/spLoginData.php', {
+    method: 'POST',
+    body: new URLSearchParams({
+      app_id: 'ednetYonsei',
+      retUrl: 'https://ys.learnus.org',
+      failUrl: 'https://ys.learnus.org/login/index.php',
+      baseUrl: 'https://ys.learnus.org',
+      loginUrl: 'https://ys.learnus.org/passni/sso/coursemosLogin.php',
+      E3: data4['E3'],
+      E4: data4['E4'],
+      S2: data4['S2'],
+      CLTID: data4['CLTID'],
+      ssoGubun: 'Login',
+      refererUrl: 'https://ys.learnus.org',
+      test: 'SSOAuthLogin',
+      username,
+      password,
+    }),
   })
 }
 
-function getE2Value(
-  keyModulus: string,
-  keyExponent: string,
-  username: string,
-  password: string,
-  ssoChallenge: string
-) {
-  const publicKey = pki.rsa.setPublicKey(
-    new jsbn.BigInteger(keyModulus, 16),
-    new jsbn.BigInteger(keyExponent, 16)
-  )
-  return stringToHex(
-    publicKey.encrypt(
-      JSON.stringify({ userid: username, userpw: password, ssoChallenge })
-    )
-  )
+async function fetch6() {
+  await fetch('https://ys.learnus.org/passni/spLoginProcess.php')
 }
 
 function stringToHex(raw: string) {
