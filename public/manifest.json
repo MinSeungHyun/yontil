@@ -9,5 +9,14 @@
     "32": "icon.png",
     "48": "icon.png",
     "128": "icon.png"
-  }
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://ys.learnus.org/login/method/sso.php"],
+      "js": ["js/content-scripts/login-page.js"]
+    }
+  ],
+
+  "permissions": ["storage"]
 }
