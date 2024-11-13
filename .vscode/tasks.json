@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "command": "pnpm",
+  "tasks": [
+    {
+      "label": "install",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["install"]
+    },
+    {
+      "label": "update",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["update"]
+    },
+    {
+      "label": "test",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["run", "test"]
+    },
+    {
+      "label": "build",
+      "type": "shell",
+      "group": "build",
+      "command": "pnpm",
+      "args": ["run", "watch"]
+    }
+  ]
+}

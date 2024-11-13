@@ -7,19 +7,3 @@ Keeps you logged in on Yonsei Univ's websites.
 
 - 현재 지원되는 사이트: 런어스, 연세포탈
 - 사용 방법: 설치후 런어스 또는 연세포탈에 처음 한번만 로그인을 해주면 됩니다.
-
-## Contribution
-
-### Install dependencies
-
-```bash
-yarn
-```
-
-### Start development
-
-Compiled files will be automatically updated in the `dist` directory.
-
-```bash
-yarn dev
-```

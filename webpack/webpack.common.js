@@ -1,15 +1,29 @@
+const webpack = require('webpack')
 const path = require('path')
 const CopyPlugin = require('copy-webpack-plugin')
-const { glob } = require('glob')
+const srcDir = path.join(__dirname, '..', 'src')
 
 module.exports = {
-  entry: glob.sync('./src/**/*.*').reduce((obj, el) => {
-    obj[path.parse(el).name] = el
-    return obj
-  }, {}),
+  entry: {
+    background: path.join(srcDir, 'entry', 'background.ts'),
+    'content-scripts/login-page': path.join(
+      srcDir,
+      'entry',
+      'content-scripts',
+      'login-page.ts'
+    ),
+  },
   output: {
     path: path.join(__dirname, '../dist/js'),
     filename: '[name].js',
+  },
+  optimization: {
+    splitChunks: {
+      name: 'vendor',
+      chunks(chunk) {
+        return chunk.name !== 'background'
+      },
+    },
   },
   module: {
     rules: [
@@ -21,25 +35,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', 'jsx'],
-    fallback: {
-      util: false,
-      url: false,
-      buffer: false,
-      path: false,
-      http: false,
-      https: false,
-      os: false,
-      zlib: false,
-      stream: false,
-      crypto: false,
-      string_decoder: false,
-      assert: false,
-      fs: false,
-      tls: false,
-      net: false,
-      child_process: false,
-    },
+    extensions: ['.ts', '.tsx', '.js'],
   },
   plugins: [
     new CopyPlugin({
@@ -47,7 +43,4 @@ module.exports = {
       options: {},
     }),
   ],
-  performance: {
-    hints: false,
-  },
 }
