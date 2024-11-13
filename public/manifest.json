@@ -11,6 +11,10 @@
     "128": "icon.png"
   },
 
+  "background": {
+    "service_worker": "js/background.js"
+  },
+
   "content_scripts": [
     {
       "matches": ["https://ys.learnus.org/login/method/sso.php"],
@@ -18,5 +22,6 @@
     }
   ],
 
-  "permissions": ["storage"]
+  "permissions": ["storage"],
+  "host_permissions": ["https://*.learnus.org/*", "https://*.yonsei.ac.kr/*"]
 }
