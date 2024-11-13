@@ -7,5 +7,17 @@
       "url": "http://json.schemastore.org/chrome-manifest"
     }
   ],
-  "cSpell.words": ["learnus", "Yontil"]
+  "cSpell.words": [
+    "CLTID",
+    "coursemos",
+    "ednet",
+    "Gubun",
+    "jsbn",
+    "learnus",
+    "logintype",
+    "passni",
+    "userid",
+    "userpw",
+    "Yontil"
+  ]
 }
