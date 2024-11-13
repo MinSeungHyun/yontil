@@ -2,15 +2,15 @@ import { jsbn, pki } from 'node-forge'
 import { parseInputTagsFromHtml } from '../utils/parse-html-string'
 import { INFRA_ORIGIN, LEARNUS_ORIGIN } from './constants'
 
-export default async function loginLearnUs(): Promise<void> {
-  const username = ''
-  const password = ''
-
-  const data1 = await fetch1(username, password)
-  const data2 = await fetch2(data1, username, password)
-  const data3 = await fetch3(data2, username, password)
-  const data4 = await fetch4(data2, data3, username, password)
-  await fetch5(data4, username, password)
+export default async function loginLearnUs(
+  id: string,
+  password: string
+): Promise<void> {
+  const data1 = await fetch1(id, password)
+  const data2 = await fetch2(data1, id, password)
+  const data3 = await fetch3(data2, id, password)
+  const data4 = await fetch4(data2, data3, id, password)
+  await fetch5(data4, id, password)
   await fetch6()
 }
 
