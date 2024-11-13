@@ -2,7 +2,7 @@ import { jsbn, pki } from 'node-forge'
 import { parseInputTagsFromHtml } from '../utils/parse-html-string'
 import { INFRA_ORIGIN, LEARNUS_ORIGIN } from './constants'
 
-export async function loginLearnUs(): Promise<void> {
+export default async function loginLearnUs(): Promise<void> {
   const username = ''
   const password = ''
 
