@@ -17,11 +17,11 @@
 
   "content_scripts": [
     {
-      "matches": ["https://ys.learnus.org/login/method/sso.php"],
+      "matches": ["https://ys.learnus.org/login/method/sso.php*"],
       "js": ["js/content-scripts/learnus-login-page.js"]
     },
     {
-      "matches": ["https://infra.yonsei.ac.kr/sso/PmSSOService"],
+      "matches": ["https://infra.yonsei.ac.kr/sso/PmSSOService*"],
       "js": ["js/content-scripts/infra-login-page.js"]
     }
   ],
