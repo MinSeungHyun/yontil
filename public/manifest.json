@@ -26,6 +26,6 @@
     }
   ],
 
-  "permissions": ["storage", "alarms"],
+  "permissions": ["storage", "alarms", "webRequest"],
   "host_permissions": ["https://*.learnus.org/*", "https://*.yonsei.ac.kr/*"]
 }
