@@ -5,14 +5,14 @@ interface LastRefreshedTime {
 }
 
 export async function saveLastRefreshedTime(): Promise<void> {
-  await chrome.storage.session.set<LastRefreshedTime>({
+  await chrome.storage.local.set<LastRefreshedTime>({
     lastRefreshedTime: Date.now(),
   })
 }
 
 async function getIsLoggedIn(): Promise<boolean> {
   const { lastRefreshedTime } =
-    await chrome.storage.session.get<LastRefreshedTime>(LAST_REFRESHED_TIME_KEY)
+    await chrome.storage.local.get<LastRefreshedTime>(LAST_REFRESHED_TIME_KEY)
 
   return (
     lastRefreshedTime !== undefined &&
@@ -27,12 +27,12 @@ interface IsRefreshing {
 }
 
 export async function saveIsRefreshing(isRefreshing: boolean): Promise<void> {
-  await chrome.storage.session.set<IsRefreshing>({ isRefreshing })
+  await chrome.storage.local.set<IsRefreshing>({ isRefreshing })
 }
 
 async function getIsRefreshing(): Promise<boolean> {
   const { isRefreshing } =
-    await chrome.storage.session.get<IsRefreshing>(IS_REFRESHING_KEY)
+    await chrome.storage.local.get<IsRefreshing>(IS_REFRESHING_KEY)
 
   return isRefreshing ?? false
 }
