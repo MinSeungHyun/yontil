@@ -1,3 +1,7 @@
+import {
+  removeLastRefreshedTime,
+  shouldShowRefreshingOverlay,
+} from '../core/login-status'
 import { refreshSession } from '../core/refresh-session'
 
 const REFRESH_SESSION_ALARM_NAME = 'refreshSession'
@@ -20,4 +24,19 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 chrome.windows.onCreated.addListener(async () => {
   await removeLastRefreshedTime()
   await refreshSession()
+})
+
+chrome.storage.onChanged.addListener(async () => {
+  // TODO: Refactoring, 특정 변경에만 실행되도록, 원하는 탭만 가져오도록 수정
+  const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
+  const shouldShow = await shouldShowRefreshingOverlay()
+
+  for (const tab of tabs) {
+    if (tab.id) {
+      try {
+        // TODO: 메시지 형식 수정
+        await chrome.tabs.sendMessage(tab.id, shouldShow)
+      } catch (e) {}
+    }
+  }
 })

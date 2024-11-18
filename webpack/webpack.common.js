@@ -18,6 +18,12 @@ module.exports = {
       'content-scripts',
       'infra-login-page.ts'
     ),
+    'content-scripts/learnus-all-pages': path.join(
+      srcDir,
+      'entry',
+      'content-scripts',
+      'learnus-all-pages.tsx'
+    ),
   },
   output: {
     path: path.join(__dirname, '../dist/js'),

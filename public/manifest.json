@@ -23,6 +23,10 @@
     {
       "matches": ["https://infra.yonsei.ac.kr/sso/PmSSOService*"],
       "js": ["js/content-scripts/infra-login-page.js"]
+    },
+    {
+      "matches": ["https://*.learnus.org/*"],
+      "js": ["js/content-scripts/learnus-all-pages.js", "js/vendor.js"]
     }
   ],
 
