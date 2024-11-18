@@ -10,6 +10,10 @@ export async function saveLastRefreshedTime(): Promise<void> {
   })
 }
 
+export async function removeLastRefreshedTime(): Promise<void> {
+  await chrome.storage.local.remove(LAST_REFRESHED_TIME_KEY)
+}
+
 async function getIsLoggedIn(): Promise<boolean> {
   const { lastRefreshedTime } =
     await chrome.storage.local.get<LastRefreshedTime>(LAST_REFRESHED_TIME_KEY)

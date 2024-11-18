@@ -18,5 +18,6 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 })
 
 chrome.windows.onCreated.addListener(async () => {
+  await removeLastRefreshedTime()
   await refreshSession()
 })
