@@ -14,10 +14,7 @@ chrome.runtime.onMessage.addListener((message) => {
 function handleShouldShowRefreshingOverlayChange(shouldShow: boolean) {
   if (shouldShow) {
     showRefreshingOverlay()
-    return
-  }
-
-  if (checkIsRefreshing()) {
+  } else if (checkIsRefreshing()) {
     if (checkIsInLoginPage()) {
       window.location.reload()
     } else {
