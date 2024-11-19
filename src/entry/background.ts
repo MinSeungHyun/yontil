@@ -1,11 +1,12 @@
 import {
   removeLastRefreshedTime,
+  SESSION_EXPIRATION_TIME_IN_MINUTES,
   shouldShowRefreshingOverlay,
 } from '../core/login-status'
 import { refreshSession } from '../core/refresh-session'
 
 const REFRESH_SESSION_ALARM_NAME = 'refreshSession'
-const REFRESH_SESSION_PERIOD_IN_MINUTES = 59
+const REFRESH_SESSION_PERIOD_IN_MINUTES = SESSION_EXPIRATION_TIME_IN_MINUTES - 1
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.alarms.create(REFRESH_SESSION_ALARM_NAME, {

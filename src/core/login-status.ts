@@ -1,5 +1,7 @@
 const LAST_REFRESHED_TIME_KEY = 'lastRefreshedTime'
 
+export const SESSION_EXPIRATION_TIME_IN_MINUTES = 60
+
 interface LastRefreshedTime {
   [LAST_REFRESHED_TIME_KEY]: number | undefined
 }
@@ -20,7 +22,8 @@ async function getIsLoggedIn(): Promise<boolean> {
 
   return (
     lastRefreshedTime !== undefined &&
-    lastRefreshedTime > Date.now() - 1000 * 60 * 60
+    lastRefreshedTime >
+      Date.now() - 1000 * 60 * SESSION_EXPIRATION_TIME_IN_MINUTES
   )
 }
 
