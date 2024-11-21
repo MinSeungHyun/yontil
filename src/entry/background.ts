@@ -1,3 +1,4 @@
+import { LEARNUS_URL_PATTERN, YONSEI_URL_PATTERN } from '../core/constants'
 import {
   removeLastRefreshedTime,
   SESSION_EXPIRATION_TIME_IN_MINUTES,
@@ -30,7 +31,7 @@ chrome.windows.onCreated.addListener(async () => {
 
 chrome.storage.onChanged.addListener(async () => {
   const tabs = await chrome.tabs.query({
-    url: ['https://*.learnus.org/*', 'https://*.yonsei.ac.kr/*'],
+    url: [LEARNUS_URL_PATTERN, YONSEI_URL_PATTERN],
   })
 
   const showRefreshingOverlay = await getShowRefreshingOverlay()
