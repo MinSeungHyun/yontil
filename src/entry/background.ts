@@ -4,6 +4,7 @@ import {
   getShowRefreshingOverlay,
 } from '../core/login-status'
 import { refreshSession } from '../core/refresh-session'
+import { TabMessage } from '../core/tab-message'
 
 const REFRESH_SESSION_ALARM_NAME = 'refreshSession'
 const REFRESH_SESSION_PERIOD_IN_MINUTES = SESSION_EXPIRATION_TIME_IN_MINUTES - 1
@@ -38,8 +39,10 @@ chrome.storage.onChanged.addListener(async () => {
   for (const tab of tabs) {
     if (tab.id) {
       try {
-        // TODO: 메시지 형식 수정
-        await chrome.tabs.sendMessage(tab.id, showRefreshingOverlay)
+        await chrome.tabs.sendMessage<TabMessage>(tab.id, {
+          type: 'refreshing-overlay',
+          show: showRefreshingOverlay,
+        })
       } catch (e) {}
     }
   }

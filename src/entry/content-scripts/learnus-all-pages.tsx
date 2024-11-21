@@ -4,11 +4,16 @@ import { getShowRefreshingOverlay } from '../../core/login-status'
 import { renderToStaticMarkup } from 'react-dom/server'
 import RefreshingOverlay from '../../components/refreshing-overlay'
 import React from 'react'
+import { TabMessage } from '../../core/tab-message'
 
 getShowRefreshingOverlay().then(handleShowRefreshingOverlayChange)
 
-chrome.runtime.onMessage.addListener((message) => {
-  handleShowRefreshingOverlayChange(message)
+chrome.runtime.onMessage.addListener((message: TabMessage) => {
+  switch (message.type) {
+    case 'refreshing-overlay':
+      handleShowRefreshingOverlayChange(message.show)
+      break
+  }
 })
 
 function handleShowRefreshingOverlayChange(show: boolean) {
