@@ -24,6 +24,12 @@ module.exports = {
       'content-scripts',
       'learnus-all-pages.tsx'
     ),
+    'content-scripts/yonsei-all-pages': path.join(
+      srcDir,
+      'entry',
+      'content-scripts',
+      'yonsei-all-pages.ts'
+    ),
   },
   output: {
     path: path.join(__dirname, '../dist/js'),
