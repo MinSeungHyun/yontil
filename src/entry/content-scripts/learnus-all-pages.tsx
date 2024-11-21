@@ -1,18 +1,18 @@
 import '../../main.css'
 
-import { shouldShowRefreshingOverlay } from '../../core/login-status'
+import { getShowRefreshingOverlay } from '../../core/login-status'
 import { renderToStaticMarkup } from 'react-dom/server'
 import RefreshingOverlay from '../../components/refreshing-overlay'
 import React from 'react'
 
-shouldShowRefreshingOverlay().then(handleShouldShowRefreshingOverlayChange)
+getShowRefreshingOverlay().then(handleShowRefreshingOverlayChange)
 
 chrome.runtime.onMessage.addListener((message) => {
-  handleShouldShowRefreshingOverlayChange(message)
+  handleShowRefreshingOverlayChange(message)
 })
 
-function handleShouldShowRefreshingOverlayChange(shouldShow: boolean) {
-  if (shouldShow) {
+function handleShowRefreshingOverlayChange(show: boolean) {
+  if (show) {
     showRefreshingOverlay()
   } else if (checkIsRefreshing()) {
     if (checkIsInLoginPage()) {

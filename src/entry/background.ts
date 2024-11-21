@@ -1,7 +1,7 @@
 import {
   removeLastRefreshedTime,
   SESSION_EXPIRATION_TIME_IN_MINUTES,
-  shouldShowRefreshingOverlay,
+  getShowRefreshingOverlay,
 } from '../core/login-status'
 import { refreshSession } from '../core/refresh-session'
 
@@ -29,14 +29,13 @@ chrome.windows.onCreated.addListener(async () => {
 
 chrome.storage.onChanged.addListener(async () => {
   // TODO: Refactoring, 특정 변경에만 실행되도록, 원하는 탭만 가져오도록 수정
-  const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
-  const shouldShow = await shouldShowRefreshingOverlay()
+  const showRefreshingOverlay = await getShowRefreshingOverlay()
 
   for (const tab of tabs) {
     if (tab.id) {
       try {
         // TODO: 메시지 형식 수정
-        await chrome.tabs.sendMessage(tab.id, shouldShow)
+        await chrome.tabs.sendMessage(tab.id, showRefreshingOverlay)
       } catch (e) {}
     }
   }

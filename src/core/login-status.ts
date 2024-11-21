@@ -44,7 +44,7 @@ async function getIsRefreshing(): Promise<boolean> {
   return isRefreshing ?? false
 }
 
-export async function shouldShowRefreshingOverlay(): Promise<boolean> {
+export async function getShowRefreshingOverlay(): Promise<boolean> {
   const isLoggedIn = await getIsLoggedIn()
   const isRefreshing = await getIsRefreshing()
 
