@@ -22,7 +22,7 @@ module.exports = {
       srcDir,
       'entry',
       'content-scripts',
-      'learnus-all-pages.tsx'
+      'learnus-all-pages.ts'
     ),
     'content-scripts/yonsei-all-pages': path.join(
       srcDir,
