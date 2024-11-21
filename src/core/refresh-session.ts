@@ -1,3 +1,4 @@
+import { waitUntilTabsLoaded } from '../utils/wait-until-tabs-loaded'
 import { loadLoginData } from './login-data'
 import loginLearnUs from './login-learnus'
 import loginPortal from './login-portal'
@@ -8,6 +9,10 @@ export async function refreshSession(): Promise<void> {
 
   if (loginData) {
     await saveIsRefreshing(true)
+
+    await waitUntilTabsLoaded({
+      url: ['https://*.learnus.org/*', 'https://*.yonsei.ac.kr/*'],
+    })
 
     try {
       await loginLearnUs(loginData.id, loginData.password)
