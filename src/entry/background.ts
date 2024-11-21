@@ -29,6 +29,10 @@ chrome.windows.onCreated.addListener(async () => {
 
 chrome.storage.onChanged.addListener(async () => {
   // TODO: Refactoring, 특정 변경에만 실행되도록, 원하는 탭만 가져오도록 수정
+  const tabs = await chrome.tabs.query({
+    url: ['https://*.learnus.org/*', 'https://*.yonsei.ac.kr/*'],
+  })
+
   const showRefreshingOverlay = await getShowRefreshingOverlay()
 
   for (const tab of tabs) {
