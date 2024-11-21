@@ -4,7 +4,7 @@ import { getShowRefreshingOverlay } from '../../core/login-status'
 import { renderToStaticMarkup } from 'react-dom/server'
 import RefreshingOverlay from '../../components/refreshing-overlay'
 import React from 'react'
-import { TabMessage } from '../../core/tab-message'
+import { TabMessage } from '../../utils/tab-message'
 
 getShowRefreshingOverlay().then(handleShowRefreshingOverlayChange)
 
