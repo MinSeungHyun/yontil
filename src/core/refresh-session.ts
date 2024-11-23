@@ -4,6 +4,7 @@ import { loadLoginData } from './login-data'
 import loginLearnUs from './login-learnus'
 import loginPortal from './login-portal'
 import { saveLastRefreshedTime, saveIsRefreshing } from './login-status'
+import updateLearnUsSesskey from './update-learnus-sesskey'
 
 export async function refreshSession(): Promise<void> {
   const loginData = await loadLoginData()
@@ -17,6 +18,7 @@ export async function refreshSession(): Promise<void> {
 
     try {
       await loginLearnUs(loginData.id, loginData.password)
+      updateLearnUsSesskey()
       await loginPortal()
 
       await saveLastRefreshedTime()
