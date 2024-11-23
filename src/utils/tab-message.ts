@@ -1,8 +1,15 @@
-export type TabMessage = ShowRefreshingOverlayMessage
+export type TabMessage =
+  | ShowRefreshingOverlayMessage
+  | UpdateLearnUsSesskeyMessage
 
 interface ShowRefreshingOverlayMessage {
   type: 'refreshing-overlay'
   show: boolean
+}
+
+interface UpdateLearnUsSesskeyMessage {
+  type: 'update-learnus-sesskey'
+  sesskey: string
 }
 
 export async function sendMessageToTab(tabId: number, message: TabMessage) {
