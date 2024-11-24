@@ -35,8 +35,7 @@ export async function refreshSession(): Promise<void> {
       updateLearnUsSesskey()
       await loginPortal()
 
-      await saveLastRefreshedTime()
-      recreateRefreshSessionAlarm()
+      await onSessionRefreshed()
 
       break
     } catch (e) {
@@ -59,4 +58,9 @@ export async function refreshSession(): Promise<void> {
 
   await saveIsRefreshing(false)
   isRefreshing = false
+}
+
+export async function onSessionRefreshed() {
+  await saveLastRefreshedTime()
+  recreateRefreshSessionAlarm()
 }
