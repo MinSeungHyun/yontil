@@ -2,8 +2,6 @@ import '../../main.css'
 
 import { setupRefreshingOverlay } from '../../core/setup-refreshing-overlay'
 import { TabMessage } from '../../utils/tab-message'
-import { renderToStaticMarkup } from 'react-dom/server'
-import React from 'react'
 
 const { handleShowRefreshingOverlayChange } = setupRefreshingOverlay({
   checkIsInLoginPage: () => {
