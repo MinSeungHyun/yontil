@@ -18,16 +18,20 @@ chrome.runtime.onMessage.addListener((message: TabMessage) => {
       handleShowRefreshingOverlayChange(message.show)
       break
     case 'update-learnus-sesskey':
-      localStorage.setItem('sesskey', message.sesskey)
-
-      const scriptElement = document.createElement('script')
-      scriptElement.setAttribute('type', 'text/javascript')
-      scriptElement.setAttribute(
-        'src',
-        chrome.runtime.getURL('/update-learnus-sesskey-script.js')
-      )
-
-      document.body.appendChild(scriptElement)
+      updateSesskey(message.sesskey)
       break
   }
 })
+
+function updateSesskey(sesskey: string) {
+  localStorage.setItem('sesskey', sesskey)
+
+  const scriptElement = document.createElement('script')
+  scriptElement.setAttribute('type', 'text/javascript')
+  scriptElement.setAttribute(
+    'src',
+    chrome.runtime.getURL('/update-learnus-sesskey-script.js')
+  )
+
+  document.body.appendChild(scriptElement)
+}
