@@ -4,6 +4,7 @@ import {
   SESSION_EXPIRATION_TIME_IN_MINUTES,
   getShowRefreshingOverlay,
 } from '../core/login-status'
+import { startListeningNetworkStatus } from '../core/network-status'
 import { refreshSession } from '../core/refresh-session'
 import { sendMessageToTabs } from '../utils/tab-message'
 
@@ -27,6 +28,8 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 chrome.windows.onCreated.addListener(async () => {
   await removeLastRefreshedTime()
   await refreshSession()
+
+  startListeningNetworkStatus()
 })
 
 chrome.storage.onChanged.addListener(async () => {

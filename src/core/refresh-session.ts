@@ -6,7 +6,12 @@ import loginPortal from './login-portal'
 import { saveLastRefreshedTime, saveIsRefreshing } from './login-status'
 import updateLearnUsSesskey from './update-learnus-sesskey'
 
+let isRefreshing = false
+
 export async function refreshSession(): Promise<void> {
+  if (isRefreshing) return
+  isRefreshing = true
+
   try {
     const loginData = await loadLoginData()
     if (!loginData) return
@@ -26,5 +31,7 @@ export async function refreshSession(): Promise<void> {
     console.log(`[${new Date().toISOString()}] Failed to refresh session:`, e)
   } finally {
     await saveIsRefreshing(false)
+
+    isRefreshing = false
   }
 }
