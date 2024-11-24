@@ -35,5 +35,12 @@
   ],
 
   "permissions": ["storage", "alarms"],
-  "host_permissions": ["https://*.learnus.org/*", "https://*.yonsei.ac.kr/*"]
+  "host_permissions": ["https://*.learnus.org/*", "https://*.yonsei.ac.kr/*"],
+
+  "web_accessible_resources": [
+    {
+      "resources": ["update-learnus-sesskey-script.js"],
+      "matches": ["https://*.learnus.org/*"]
+    }
+  ]
 }
