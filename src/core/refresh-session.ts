@@ -8,24 +8,23 @@ import updateLearnUsSesskey from './update-learnus-sesskey'
 
 export async function refreshSession(): Promise<void> {
   const loginData = await loadLoginData()
+  if (!loginData) return
 
-  if (loginData) {
-    await saveIsRefreshing(true)
+  await saveIsRefreshing(true)
 
-    await waitUntilTabsLoaded({
-      url: [LEARNUS_URL_PATTERN, YONSEI_URL_PATTERN],
-    })
+  await waitUntilTabsLoaded({
+    url: [LEARNUS_URL_PATTERN, YONSEI_URL_PATTERN],
+  })
 
-    try {
-      await loginLearnUs(loginData.id, loginData.password)
-      updateLearnUsSesskey()
-      await loginPortal()
+  try {
+    await loginLearnUs(loginData.id, loginData.password)
+    updateLearnUsSesskey()
+    await loginPortal()
 
-      await saveLastRefreshedTime()
-    } catch (e) {
-      console.log(`[${new Date().toISOString()}] Failed to refresh session:`, e)
-    } finally {
-      await saveIsRefreshing(false)
-    }
+    await saveLastRefreshedTime()
+  } catch (e) {
+    console.log(`[${new Date().toISOString()}] Failed to refresh session:`, e)
+  } finally {
+    await saveIsRefreshing(false)
   }
 }
