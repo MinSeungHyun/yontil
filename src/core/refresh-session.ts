@@ -7,16 +7,16 @@ import { saveLastRefreshedTime, saveIsRefreshing } from './login-status'
 import updateLearnUsSesskey from './update-learnus-sesskey'
 
 export async function refreshSession(): Promise<void> {
-  const loginData = await loadLoginData()
-  if (!loginData) return
-
-  await saveIsRefreshing(true)
-
-  await waitUntilTabsLoaded({
-    url: [LEARNUS_URL_PATTERN, YONSEI_URL_PATTERN],
-  })
-
   try {
+    const loginData = await loadLoginData()
+    if (!loginData) return
+
+    await saveIsRefreshing(true)
+
+    await waitUntilTabsLoaded({
+      url: [LEARNUS_URL_PATTERN, YONSEI_URL_PATTERN],
+    })
+
     await loginLearnUs(loginData.id, loginData.password)
     updateLearnUsSesskey()
     await loginPortal()
