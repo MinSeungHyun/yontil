@@ -22,8 +22,8 @@ export async function refreshSession(): Promise<void> {
       await loginPortal()
 
       await saveLastRefreshedTime()
-    } catch (error) {
-      console.error(error)
+    } catch (e) {
+      console.log(`[${new Date().toISOString()}] Failed to refresh session:`, e)
     } finally {
       await saveIsRefreshing(false)
     }
