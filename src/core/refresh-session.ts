@@ -1,4 +1,5 @@
 import { waitUntilTabsLoaded } from '../utils/wait-until-tabs-loaded'
+import { recreateRefreshSessionAlarm } from './alarm'
 import { LEARNUS_URL_PATTERN, YONSEI_URL_PATTERN } from './constants'
 import { loadLoginData } from './login-data'
 import loginLearnUs from './login-learnus'
@@ -27,6 +28,7 @@ export async function refreshSession(): Promise<void> {
     await loginPortal()
 
     await saveLastRefreshedTime()
+    recreateRefreshSessionAlarm()
   } catch (e) {
     console.log(`[${new Date().toISOString()}] Failed to refresh session:`, e)
   } finally {

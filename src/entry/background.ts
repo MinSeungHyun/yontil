@@ -1,20 +1,18 @@
+import {
+  recreateRefreshSessionAlarm,
+  REFRESH_SESSION_ALARM_NAME,
+} from '../core/alarm'
 import { LEARNUS_URL_PATTERN, YONSEI_URL_PATTERN } from '../core/constants'
 import {
   removeLastRefreshedTime,
-  SESSION_EXPIRATION_TIME_IN_MINUTES,
   getShowRefreshingOverlay,
 } from '../core/login-status'
 import { startListeningNetworkStatus } from '../core/network-status'
 import { refreshSession } from '../core/refresh-session'
 import { sendMessageToTabs } from '../utils/tab-message'
 
-const REFRESH_SESSION_ALARM_NAME = 'refreshSession'
-const REFRESH_SESSION_PERIOD_IN_MINUTES = SESSION_EXPIRATION_TIME_IN_MINUTES - 1
-
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.alarms.create(REFRESH_SESSION_ALARM_NAME, {
-    periodInMinutes: REFRESH_SESSION_PERIOD_IN_MINUTES,
-  })
+  recreateRefreshSessionAlarm()
 })
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
