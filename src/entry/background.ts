@@ -23,12 +23,21 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   }
 })
 
-chrome.windows.onCreated.addListener(async () => {
-  await removeLastRefreshedTime()
-  await refreshSession()
+chrome.windows.onCreated.addListener(
+  async () => {
+    const allWindows = await chrome.windows.getAll({ windowTypes: ['normal'] })
+    const isFirstWindow =
+      allWindows.filter((window) => !window.incognito).length <= 1
 
-  startListeningNetworkStatus()
-})
+    if (isFirstWindow) {
+      await removeLastRefreshedTime()
+      await refreshSession()
+    }
+
+    startListeningNetworkStatus()
+  },
+  { windowTypes: ['normal'] }
+)
 
 chrome.storage.onChanged.addListener(async () => {
   const tabs = await chrome.tabs.query({
