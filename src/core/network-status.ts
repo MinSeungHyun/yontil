@@ -1,4 +1,4 @@
-import { getIsLoggedIn, getIsRefreshing } from './login-status'
+import { isSessionRefreshNeeded } from './login-status'
 import { refreshSession } from './refresh-session'
 
 export function startListeningNetworkStatus(): void {
@@ -15,10 +15,7 @@ function handleConnectionChange(): void {
 }
 
 async function handleOnline(): Promise<void> {
-  const isLoggedIn = await getIsLoggedIn()
-  const isRefreshing = await getIsRefreshing()
-
-  if (!isLoggedIn && !isRefreshing) {
+  if (await isSessionRefreshNeeded()) {
     await refreshSession()
   }
 }
