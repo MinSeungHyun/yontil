@@ -24,6 +24,13 @@ chrome.runtime.onMessage.addListener((message: TabMessage) => {
 })
 
 function updateSesskey(sesskey: string) {
+  const sesskeyElements = document.getElementsByName('sesskey')
+  for (const sesskeyElement of sesskeyElements) {
+    if (sesskeyElement instanceof HTMLInputElement) {
+      sesskeyElement.value = sesskey
+    }
+  }
+
   localStorage.setItem('sesskey', sesskey)
 
   const scriptElement = document.createElement('script')
