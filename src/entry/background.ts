@@ -1,4 +1,5 @@
 import {
+  getIsRefreshSessionAlarmExists,
   recreateRefreshSessionAlarm,
   REFRESH_SESSION_ALARM_NAME,
 } from '../core/alarm'
@@ -11,8 +12,11 @@ import { startListeningNetworkStatus } from '../core/network-status'
 import { refreshSession } from '../core/refresh-session'
 import { sendMessageToTabs } from '../utils/tab-message'
 
-chrome.runtime.onInstalled.addListener(() => {
-  recreateRefreshSessionAlarm()
+chrome.runtime.onInstalled.addListener(async () => {
+  const isAlarmExists = await getIsRefreshSessionAlarmExists()
+  if (!isAlarmExists) {
+    await recreateRefreshSessionAlarm()
+  }
 })
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
