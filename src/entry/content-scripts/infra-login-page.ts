@@ -1,4 +1,4 @@
-import { saveLoginData } from '../../core/login-data'
+import { saveLoginData } from '../../core/login/login-data'
 
 let id: string | undefined
 let password: string | undefined

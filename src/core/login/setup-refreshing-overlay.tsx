@@ -1,5 +1,5 @@
 import { renderToStaticMarkup } from 'react-dom/server'
-import RefreshingOverlay from '../components/refreshing-overlay'
+import RefreshingOverlay from '../../components/refreshing-overlay'
 import { getShowRefreshingOverlay } from './login-status'
 import React from 'react'
 

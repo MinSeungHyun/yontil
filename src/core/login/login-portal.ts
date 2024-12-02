@@ -1,5 +1,5 @@
-import { parseInputTagsFromHtml } from '../utils/parse-html-string'
-import { INFRA_ORIGIN, PORTAL_ORIGIN } from './constants'
+import { parseInputTagsFromHtml } from '../../utils/parse-html-string'
+import { INFRA_ORIGIN, PORTAL_ORIGIN } from '../constants'
 
 export default async function loginPortal() {
   const data1 = await fetch1()

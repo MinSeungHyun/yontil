@@ -1,5 +1,5 @@
-import { sendMessageToTabs } from '../utils/tab-message'
-import { LEARNUS_ORIGIN, LEARNUS_URL_PATTERN } from './constants'
+import { sendMessageToTabs } from '../../utils/tab-message'
+import { LEARNUS_ORIGIN, LEARNUS_URL_PATTERN } from '../constants'
 
 export default async function updateLearnUsSesskey() {
   const response = await fetch(LEARNUS_ORIGIN)

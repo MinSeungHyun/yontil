@@ -7,9 +7,9 @@ import { LEARNUS_URL_PATTERN, YONSEI_URL_PATTERN } from '../core/constants'
 import {
   removeLastRefreshedTime,
   getShowRefreshingOverlay,
-} from '../core/login-status'
+} from '../core/login/login-status'
 import { startListeningNetworkStatus } from '../core/network-status'
-import { refreshSession } from '../core/refresh-session'
+import { refreshSession } from '../core/login/refresh-session'
 import { sendMessageToTabs } from '../utils/tab-message'
 
 chrome.runtime.onInstalled.addListener(async () => {

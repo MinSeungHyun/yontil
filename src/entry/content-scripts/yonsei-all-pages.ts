@@ -1,6 +1,6 @@
 import '../../main.css'
 
-import { setupRefreshingOverlay } from '../../core/setup-refreshing-overlay'
+import { setupRefreshingOverlay } from '../../core/login/setup-refreshing-overlay'
 import { TabMessage } from '../../utils/tab-message'
 
 const { handleShowRefreshingOverlayChange } = setupRefreshingOverlay({

@@ -1,5 +1,5 @@
-import { isSessionRefreshNeeded } from './login-status'
-import { refreshSession } from './refresh-session'
+import { isSessionRefreshNeeded } from './login/login-status'
+import { refreshSession } from './login/refresh-session'
 
 export function startListeningNetworkStatus(): void {
   navigator.connection?.removeEventListener('change', handleConnectionChange)

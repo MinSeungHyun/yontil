@@ -1,4 +1,4 @@
-import { saveLoginData } from '../../core/login-data'
+import { saveLoginData } from '../../core/login/login-data'
 
 const loginForm = document.getElementById('ssoLoginForm')
 

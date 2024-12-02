@@ -1,6 +1,6 @@
 import { jsbn, pki } from 'node-forge'
-import { parseInputTagsFromHtml } from '../utils/parse-html-string'
-import { INFRA_ORIGIN, LEARNUS_ORIGIN } from './constants'
+import { parseInputTagsFromHtml } from '../../utils/parse-html-string'
+import { INFRA_ORIGIN, LEARNUS_ORIGIN } from '../constants'
 
 export default async function loginLearnUs(
   id: string,
