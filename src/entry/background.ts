@@ -65,3 +65,11 @@ chrome.storage.onChanged.addListener(async () => {
     show: showRefreshingOverlay,
   })
 })
+
+chrome.runtime.onMessage.addListener(async (message) => {
+  switch (message.type) {
+    case 'recreate-refresh-session-alarm':
+      await recreateRefreshSessionAlarm()
+      break
+  }
+})

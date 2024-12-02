@@ -1,6 +1,7 @@
 export type TabMessage =
   | ShowRefreshingOverlayMessage
   | UpdateLearnUsSesskeyMessage
+  | RecreateRefreshSessionAlarmMessage
 
 interface ShowRefreshingOverlayMessage {
   type: 'refreshing-overlay'
@@ -10,6 +11,10 @@ interface ShowRefreshingOverlayMessage {
 interface UpdateLearnUsSesskeyMessage {
   type: 'update-learnus-sesskey'
   sesskey: string
+}
+
+interface RecreateRefreshSessionAlarmMessage {
+  type: 'recreate-refresh-session-alarm'
 }
 
 export async function sendMessageToTab(tabId: number, message: TabMessage) {
@@ -26,4 +31,8 @@ export async function sendMessageToTab(tabId: number, message: TabMessage) {
 
 export async function sendMessageToTabs(tabIds: number[], message: TabMessage) {
   await Promise.all(tabIds.map((tabId) => sendMessageToTab(tabId, message)))
+}
+
+export async function sendMessageToBackground(message: TabMessage) {
+  await chrome.runtime.sendMessage<TabMessage>(message)
 }
