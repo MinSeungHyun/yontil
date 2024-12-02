@@ -1,59 +1,65 @@
-const LAST_REFRESHED_TIME_KEY = 'lastRefreshedTime'
+const LAST_SESSION_REFRESHED_TIME_KEY = 'lastSessionRefreshedTime'
 
 export const SESSION_EXPIRATION_TIME_IN_MINUTES = 60
 
-interface LastRefreshedTime {
-  [LAST_REFRESHED_TIME_KEY]: number | undefined
+interface LastSessionRefreshedTime {
+  [LAST_SESSION_REFRESHED_TIME_KEY]: number | undefined
 }
 
-export async function saveLastRefreshedTime(): Promise<void> {
-  await chrome.storage.local.set<LastRefreshedTime>({
-    lastRefreshedTime: Date.now(),
+export async function saveLastSessionRefreshedTime(): Promise<void> {
+  await chrome.storage.local.set<LastSessionRefreshedTime>({
+    lastSessionRefreshedTime: Date.now(),
   })
 }
 
-export async function removeLastRefreshedTime(): Promise<void> {
-  await chrome.storage.local.remove(LAST_REFRESHED_TIME_KEY)
+export async function removeLastSessionRefreshedTime(): Promise<void> {
+  await chrome.storage.local.remove(LAST_SESSION_REFRESHED_TIME_KEY)
 }
 
 async function getIsLoggedIn(): Promise<boolean> {
-  const { lastRefreshedTime } =
-    await chrome.storage.local.get<LastRefreshedTime>(LAST_REFRESHED_TIME_KEY)
+  const { lastSessionRefreshedTime } =
+    await chrome.storage.local.get<LastSessionRefreshedTime>(
+      LAST_SESSION_REFRESHED_TIME_KEY
+    )
 
   return (
-    lastRefreshedTime !== undefined &&
-    lastRefreshedTime >
+    lastSessionRefreshedTime !== undefined &&
+    lastSessionRefreshedTime >
       Date.now() - 1000 * 60 * SESSION_EXPIRATION_TIME_IN_MINUTES
   )
 }
 
-const IS_REFRESHING_KEY = 'isRefreshing'
+const IS_SESSION_REFRESHING_KEY = 'isSessionRefreshing'
 
-interface IsRefreshing {
-  [IS_REFRESHING_KEY]: boolean | undefined
+interface IsSessionRefreshing {
+  [IS_SESSION_REFRESHING_KEY]: boolean | undefined
 }
 
-export async function saveIsRefreshing(isRefreshing: boolean): Promise<void> {
-  await chrome.storage.local.set<IsRefreshing>({ isRefreshing })
+export async function saveIsSessionRefreshing(
+  isSessionRefreshing: boolean
+): Promise<void> {
+  await chrome.storage.local.set<IsSessionRefreshing>({ isSessionRefreshing })
 }
 
-async function getIsRefreshing(): Promise<boolean> {
-  const { isRefreshing } =
-    await chrome.storage.local.get<IsRefreshing>(IS_REFRESHING_KEY)
+async function getIsSessionRefreshing(): Promise<boolean> {
+  const { isSessionRefreshing } =
+    await chrome.storage.local.get<IsSessionRefreshing>(
+      IS_SESSION_REFRESHING_KEY
+    )
 
-  return isRefreshing ?? false
+  return isSessionRefreshing ?? false
 }
 
 export async function getShowRefreshingOverlay(): Promise<boolean> {
   const isLoggedIn = await getIsLoggedIn()
-  const isRefreshing = await getIsRefreshing()
+  const isSessionRefreshing = await getIsSessionRefreshing()
 
-  return !isLoggedIn && isRefreshing
+  return !isLoggedIn && isSessionRefreshing
 }
 
 export async function isSessionRefreshNeeded(): Promise<boolean> {
   const isLoggedIn = await getIsLoggedIn()
-  const isRefreshing = await getIsRefreshing()
+  const isSessionRefreshing = await getIsSessionRefreshing()
 
-  return !isLoggedIn && !isRefreshing
+  return !isLoggedIn && !isSessionRefreshing
 }

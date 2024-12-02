@@ -4,7 +4,10 @@ import { LEARNUS_URL_PATTERN, YONSEI_URL_PATTERN } from '../constants'
 import { loadLoginData } from './login-data'
 import loginLearnUs from './login-learnus'
 import loginPortal from './login-portal'
-import { saveLastRefreshedTime, saveIsRefreshing } from './login-status'
+import {
+  saveLastSessionRefreshedTime,
+  saveIsSessionRefreshing,
+} from './login-status'
 import updateLearnUsSesskey from './update-learnus-sesskey'
 
 let isRefreshing = false
@@ -13,11 +16,11 @@ export async function refreshSession(): Promise<void> {
   if (isRefreshing) return
 
   isRefreshing = true
-  await saveIsRefreshing(true)
+  await saveIsSessionRefreshing(true)
 
   const loginData = await loadLoginData()
   if (!loginData) {
-    await saveIsRefreshing(false)
+    await saveIsSessionRefreshing(false)
     isRefreshing = false
     return
   }
@@ -56,11 +59,11 @@ export async function refreshSession(): Promise<void> {
     }
   }
 
-  await saveIsRefreshing(false)
+  await saveIsSessionRefreshing(false)
   isRefreshing = false
 }
 
 export async function onSessionRefreshed() {
-  await saveLastRefreshedTime()
+  await saveLastSessionRefreshedTime()
   recreateRefreshSessionAlarm()
 }

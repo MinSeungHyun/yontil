@@ -5,7 +5,7 @@ import {
 } from '../core/alarm'
 import { LEARNUS_URL_PATTERN, YONSEI_URL_PATTERN } from '../core/constants'
 import {
-  removeLastRefreshedTime,
+  removeLastSessionRefreshedTime,
   getShowRefreshingOverlay,
 } from '../core/login/login-status'
 import { startListeningNetworkStatus } from '../core/network-status'
@@ -34,7 +34,7 @@ chrome.windows.onCreated.addListener(
       allWindows.filter((window) => !window.incognito).length <= 1
 
     if (isFirstWindow) {
-      await removeLastRefreshedTime()
+      await removeLastSessionRefreshedTime()
       await refreshSession()
     }
 
