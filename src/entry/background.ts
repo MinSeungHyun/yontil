@@ -11,8 +11,12 @@ import {
 import { startListeningNetworkStatus } from '../core/network-status'
 import { refreshSession } from '../core/login/refresh-session'
 import { sendMessageToTabs } from '../utils/tab-message'
+import { migrateLocalStorageKey } from '../utils/migrate-storage-key'
 
 chrome.runtime.onInstalled.addListener(async () => {
+  await migrateLocalStorageKey('lastRefreshedTime', 'lastSessionRefreshedTime')
+  await migrateLocalStorageKey('isRefreshing', 'isSessionRefreshing')
+
   const isAlarmExists = await getIsRefreshSessionAlarmExists()
   if (!isAlarmExists) {
     await recreateRefreshSessionAlarm()
