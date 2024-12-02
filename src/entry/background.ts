@@ -13,9 +13,14 @@ import { refreshSession } from '../core/login/refresh-session'
 import { sendMessageToTabs } from '../utils/tab-message'
 import { migrateLocalStorageKey } from '../utils/migrate-storage-key'
 
-chrome.runtime.onInstalled.addListener(async () => {
-  await migrateLocalStorageKey('lastRefreshedTime', 'lastSessionRefreshedTime')
-  await migrateLocalStorageKey('isRefreshing', 'isSessionRefreshing')
+chrome.runtime.onInstalled.addListener(async (details) => {
+  if (details.reason === chrome.runtime.OnInstalledReason.UPDATE) {
+    await migrateLocalStorageKey(
+      'lastRefreshedTime',
+      'lastSessionRefreshedTime'
+    )
+    await migrateLocalStorageKey('isRefreshing', 'isSessionRefreshing')
+  }
 
   const isAlarmExists = await getIsRefreshSessionAlarmExists()
   if (!isAlarmExists) {
