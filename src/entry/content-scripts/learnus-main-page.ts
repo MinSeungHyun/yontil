@@ -3,18 +3,21 @@ refreshTasks()
 async function refreshTasks() {
   const courseElements = document.querySelectorAll('.my-course-lists li')
 
+  const courses: {
+    element: Element
+    tasks: Element[]
+  }[] = []
+
   for (const courseElement of courseElements) {
     const courseLinkElement = courseElement.querySelector('.course-link')
     if (!(courseLinkElement instanceof HTMLAnchorElement)) continue
 
-    const courseUrl = courseLinkElement.href
-    const tasks = await fetchCourseTasks(courseUrl)
-    if (tasks.length === 0) continue
+    const tasks = await fetchCourseTasks(courseLinkElement.href)
+    courses.push({ element: courseElement, tasks })
+  }
 
-    const tasksElement = document.createElement('ul')
-    tasksElement.classList.add('yontil-tasks')
-    tasksElement.append(...tasks)
-    courseElement.append(tasksElement)
+  for (const course of courses) {
+    showTasks(course.element, course.tasks)
   }
 }
 
@@ -33,4 +36,11 @@ async function fetchCourseTasks(courseUrl: string): Promise<Element[]> {
   )
 
   return [...fixedTasks, ...weekTasks]
+}
+
+function showTasks(courseElement: Element, tasks: Element[]) {
+  const tasksElement = document.createElement('ul')
+  tasksElement.classList.add('yontil-tasks')
+  tasksElement.append(...tasks)
+  courseElement.append(tasksElement)
 }
