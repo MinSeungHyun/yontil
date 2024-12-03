@@ -1,0 +1,214 @@
+.my-course-lists > li {
+  display: grid !important;
+  grid-template-columns: 1fr auto;
+  column-gap: 0.5rem;
+
+  @media (max-width: 767.98px) {
+    display: block !important;
+  }
+}
+
+.my-course-lists > li .course-status {
+  flex-shrink: 0;
+
+  @media (max-width: 767.98px) {
+    margin-top: 0.5rem;
+  }
+}
+
+.my-course-lists .course-title .prof {
+  display: block;
+}
+
+.yontil-tasks {
+  grid-column: 1 / 3;
+  margin-top: 1rem;
+  padding-left: 0;
+}
+
+.yontil-tasks .activity {
+  display: list-item;
+  list-style: none;
+}
+
+.yontil-tasks .activity:first-child {
+  border-top-style: solid;
+  border-top-width: 1px;
+}
+
+.yontil-tasks .activity:first-child:not(:hover) {
+  border-color: transparent;
+}
+
+.yontil-tasks .activity .contentafterlink li {
+  border-top: unset;
+  background-color: unset;
+  display: list-item;
+  align-items: unset;
+  padding: unset;
+}
+
+/*
+From here to the end of the file
+Copied from https://ys.learnus.org/theme/styles.php/coursemosv2/1727860802_1/all and modified only selectors
+*/
+.yontil-tasks .section-title,
+.yontil-tasks .sectionname {
+  font-size: 1.25rem;
+  color: #013976;
+}
+
+.yontil-tasks .section-title a,
+.yontil-tasks .sectionname a {
+  color: #013976;
+}
+
+.yontil-tasks .section-title {
+  margin: 0 0 2rem 0;
+}
+
+.yontil-tasks .summary {
+  color: #666;
+}
+
+.yontil-tasks .badge {
+  font-size: 0.9rem;
+}
+
+.yontil-tasks .badge .dimmed_text {
+  color: white !important;
+}
+
+.yontil-tasks .activity {
+  padding: 0.5rem 1rem;
+  border: 1px solid transparent;
+}
+
+@media (max-width: 767.98px) {
+  .yontil-tasks .activity {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+.yontil-tasks .activity:hover {
+  background-color: #f6f6f6;
+  border-color: #ebebeb;
+}
+
+.yontil-tasks .activity .mod-indent-outer .activityinstance,
+.yontil-tasks .activity .mod-indent-outer .contentwithoutlink {
+  padding-right: 1rem;
+}
+
+.yontil-tasks .activity .mod-indent-outer .activityinstance > a {
+  display: inline;
+  padding-left: 0;
+  text-indent: inherit;
+  vertical-align: middle;
+}
+
+.yontil-tasks .activity .mod-indent-outer .activityinstance .groupinglabel {
+  padding-left: 0;
+}
+
+.yontil-tasks .activity .mod-indent-outer .activityinstance .mediaplugin {
+  width: inherit;
+  max-width: inherit;
+}
+
+.yontil-tasks .activity .mod-indent-outer .activityinstance .mediaplugin > div {
+  margin: 0;
+}
+
+.yontil-tasks .activity .mod-indent-outer .actions .autocompletion img,
+.yontil-tasks .activity .mod-indent-outer .actions .togglecompletion img {
+  margin-right: 0;
+}
+
+.yontil-tasks .activity a {
+  color: #333;
+}
+
+.yontil-tasks .activity a.editing_title {
+  display: none;
+}
+
+.yontil-tasks .activity img.activityicon {
+  vertical-align: middle;
+  margin-right: 1rem;
+}
+
+.yontil-tasks .activity .displayoptions,
+.yontil-tasks .activity .resourcelinkdetails {
+  margin-left: 0.5rem;
+  color: #ff3f0b;
+  font-size: 0.875rem;
+}
+
+.yontil-tasks .activity.label {
+  border-radius: 0;
+  text-align: left;
+}
+
+.yontil-tasks .availabilityinfo,
+.yontil-tasks .contentafterlink,
+.yontil-tasks .section_availability {
+  font-size: 0.9rem;
+  margin: 0 0 1rem 0;
+}
+
+.yontil-tasks .availabilityinfo:empty,
+.yontil-tasks .contentafterlink:empty,
+.yontil-tasks .section_availability:empty {
+  display: none;
+}
+
+.yontil-tasks .quickeditlink .quickediticon.visibleifjs {
+  display: none;
+}
+
+.yontil-tasks .section-summary-activities .activity-count {
+  font-size: 1rem;
+  margin: 0.8rem 1rem 0;
+}
+
+.yontil-tasks .section-summary-activities .activity-count .modicon {
+  margin-right: 5px;
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
+}
+
+.yontil-tasks .activity .actions {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+}
+
+.yontil-tasks .activity > div {
+  position: relative;
+  padding: 0 16px 0 0;
+}
+
+.yontil-tasks .activity .activityinstance,
+.yontil-tasks .activity .activityinstance div {
+  display: inline-block;
+}
+
+.yontil-tasks .activity ul {
+  list-style: disc;
+}
+
+.yontil-tasks .activity ul ul {
+  list-style: circle;
+}
+
+.yontil-tasks .activity ul ul ul {
+  list-style: square;
+}
+
+.yontil-tasks .activity .contentafterlink p {
+  margin: 0.5em 0;
+}

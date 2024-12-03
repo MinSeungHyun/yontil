@@ -8,17 +8,32 @@
     }
   ],
   "cSpell.words": [
+    "activityicon",
+    "activityinstance",
+    "availabilityinfo",
     "CLTID",
+    "contentafterlink",
+    "contentwithoutlink",
     "coursemos",
+    "displayoptions",
     "ednet",
+    "groupinglabel",
     "Gubun",
     "jsbn",
     "learnus",
     "logintype",
+    "mediaplugin",
+    "modicon",
     "passni",
+    "quickediticon",
+    "quickeditlink",
+    "resourcelinkdetails",
+    "sectionname",
     "Sesskey",
+    "togglecompletion",
     "userid",
     "userpw",
+    "visibleifjs",
     "Yontil"
   ]
 }
