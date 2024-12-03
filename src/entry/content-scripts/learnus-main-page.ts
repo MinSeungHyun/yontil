@@ -6,6 +6,8 @@ async function refreshTasks() {
   const courseElements = document.querySelectorAll('.my-course-lists li')
   if (courseElements.length === 0) return
 
+  showRefreshingTasksIndicator()
+
   showCachedTasks(courseElements)
 
   const courses: {
@@ -33,6 +35,8 @@ async function refreshTasks() {
       tasks: course.tasks.map((task) => task.outerHTML),
     }))
   )
+
+  hideRefreshingTasksIndicator()
 }
 
 async function showCachedTasks(courseElements: NodeListOf<Element>) {
@@ -66,6 +70,23 @@ async function fetchCourseTasks(courseUrl: string): Promise<Element[]> {
   )
 
   return [...fixedTasks, ...weekTasks]
+}
+
+function showRefreshingTasksIndicator() {
+  const headerTitleElement = document.querySelector('.front-box-header .title')
+  if (!headerTitleElement) return
+
+  const indicatorElement = document.createElement('span')
+  indicatorElement.classList.add('yontil-refreshing-tasks-indicator')
+  indicatorElement.innerHTML = '할 일 불러오는 중...'
+  headerTitleElement.append(indicatorElement)
+}
+
+function hideRefreshingTasksIndicator() {
+  const indicatorElement = document.querySelector(
+    '.yontil-refreshing-tasks-indicator'
+  )
+  indicatorElement?.remove()
 }
 
 function showHtmlTasks(courseElement: Element, tasks: string[]) {
