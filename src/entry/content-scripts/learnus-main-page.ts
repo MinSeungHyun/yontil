@@ -90,9 +90,13 @@ function hideRefreshingTasksIndicator() {
 }
 
 function showHtmlTasks(courseElement: Element, tasks: string[]) {
-  if (tasks.length === 0) return
-
   let tasksElement = courseElement.querySelector('.yontil-tasks')
+
+  if (tasks.length === 0) {
+    tasksElement?.remove()
+    return
+  }
+
   if (tasksElement) {
     tasksElement.innerHTML = tasks.join('')
     return
@@ -104,9 +108,13 @@ function showHtmlTasks(courseElement: Element, tasks: string[]) {
 }
 
 function showTasks(courseElement: Element, tasks: Element[]) {
-  if (tasks.length === 0) return
-
   let tasksElement = courseElement.querySelector('.yontil-tasks')
+
+  if (tasks.length === 0) {
+    tasksElement?.remove()
+    return
+  }
+
   if (tasksElement) {
     tasksElement.replaceChildren(...tasks)
     return
