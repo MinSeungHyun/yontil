@@ -9,6 +9,7 @@ async function refreshTasks() {
 
     const courseUrl = courseLinkElement.href
     const tasks = await fetchCourseTasks(courseUrl)
+    if (tasks.length === 0) continue
 
     const tasksElement = document.createElement('ul')
     tasksElement.classList.add('yontil-tasks')
