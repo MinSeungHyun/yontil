@@ -2,7 +2,7 @@
   "manifest_version": 3,
 
   "name": "Yontil(연틸) - Yonsei Utils",
-  "description": "연세대의 여러 사이트들에서 로그인된 상태를 유지시켜줍니다. Keeps you logged in on Yonsei Univ's websites.",
+  "description": "연세대의 여러 사이트들에서 사용할 수 있는 편의 기능들을 제공합니다. (자동 로그인, 런어스 홈에서 할 일 바로보기)",
   "version": "1.1.1",
   "icons": {
     "16": "icon.png",
