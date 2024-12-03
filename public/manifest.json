@@ -31,6 +31,14 @@
     {
       "matches": ["https://*.yonsei.ac.kr/*"],
       "js": ["js/content-scripts/yonsei-all-pages.js", "js/vendor.js"]
+    },
+    {
+      "matches": [
+        "https://ys.learnus.org/",
+        "https://ys.learnus.org/index.php*"
+      ],
+      "js": ["js/content-scripts/learnus-main-page.js"],
+      "css": ["css/learnus-main-page.css"]
     }
   ],
 
