@@ -4,6 +4,7 @@ refreshTasks()
 
 async function refreshTasks() {
   const courseElements = document.querySelectorAll('.my-course-lists li')
+  if (courseElements.length === 0) return
 
   showCachedTasks(courseElements)
 
