@@ -23,6 +23,10 @@ export function setupRefreshingOverlay({ checkIsInLoginPage }: Options) {
   }
 
   function showRefreshingOverlay() {
+    if (document.getElementById('refreshing-overlay')) {
+      return
+    }
+
     const element = renderToStaticMarkup(
       <RefreshingOverlay id="refreshing-overlay" />
     )
