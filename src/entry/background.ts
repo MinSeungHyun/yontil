@@ -10,7 +10,7 @@ import {
 } from '../core/login/login-status'
 import { startListeningNetworkStatus } from '../core/network-status'
 import { refreshSession } from '../core/login/refresh-session'
-import { sendMessageToTabs } from '../utils/tab-message'
+import { sendMessageToTabs, TabMessage } from '../utils/tab-message'
 import { migrateLocalStorageKey } from '../utils/migrate-storage-key'
 
 chrome.runtime.onInstalled.addListener(async (details) => {
@@ -66,10 +66,13 @@ chrome.storage.onChanged.addListener(async () => {
   })
 })
 
-chrome.runtime.onMessage.addListener(async (message) => {
+chrome.runtime.onMessage.addListener(async (message: TabMessage) => {
   switch (message.type) {
     case 'recreate-refresh-session-alarm':
       await recreateRefreshSessionAlarm()
+      break
+    case 'on-signed-out':
+      await refreshSession({ isSignedOut: true })
       break
   }
 })
