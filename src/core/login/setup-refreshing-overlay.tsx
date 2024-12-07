@@ -8,9 +8,13 @@ interface Options {
 }
 
 export function setupRefreshingOverlay({ checkIsInLoginPage }: Options) {
-  getShowRefreshingOverlay().then(handleShowRefreshingOverlayChange)
+  handleShowRefreshingOverlayChange()
 
-  function handleShowRefreshingOverlayChange(show: boolean) {
+  async function handleShowRefreshingOverlayChange() {
+    const show = await getShowRefreshingOverlay({
+      isInLoginPage: checkIsInLoginPage(),
+    })
+
     if (show) {
       showRefreshingOverlay()
     } else if (checkIsRefreshing()) {

@@ -7,24 +7,15 @@ import loginPortal from './login-portal'
 import {
   saveLastSessionRefreshedTime,
   saveIsSessionRefreshing,
-  removeLastSessionRefreshedTime,
 } from './login-status'
 import updateLearnUsSesskey from './update-learnus-sesskey'
 
 let isRefreshing = false
 
-export async function refreshSession(options?: {
-  isSignedOut?: boolean
-}): Promise<void> {
-  const { isSignedOut = false } = options ?? {}
-
+export async function refreshSession(): Promise<void> {
   if (isRefreshing) return
+
   isRefreshing = true
-
-  if (isSignedOut) {
-    await removeLastSessionRefreshedTime()
-  }
-
   await saveIsSessionRefreshing(true)
 
   const loginData = await loadLoginData()

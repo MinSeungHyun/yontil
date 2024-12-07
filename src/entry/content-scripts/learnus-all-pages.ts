@@ -15,7 +15,7 @@ const { handleShowRefreshingOverlayChange } = setupRefreshingOverlay({
 chrome.runtime.onMessage.addListener((message: TabMessage) => {
   switch (message.type) {
     case 'refreshing-overlay':
-      handleShowRefreshingOverlayChange(message.show)
+      handleShowRefreshingOverlayChange()
       break
     case 'update-learnus-sesskey':
       updateSesskey(message.sesskey)

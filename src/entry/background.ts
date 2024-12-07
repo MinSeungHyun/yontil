@@ -57,13 +57,8 @@ chrome.storage.onChanged.addListener(async () => {
     url: [LEARNUS_URL_PATTERN, YONSEI_URL_PATTERN],
   })
 
-  const showRefreshingOverlay = await getShowRefreshingOverlay()
-
   const tabIds = tabs.map((tab) => tab.id).filter((id) => id !== undefined)
-  await sendMessageToTabs(tabIds, {
-    type: 'refreshing-overlay',
-    show: showRefreshingOverlay,
-  })
+  await sendMessageToTabs(tabIds, { type: 'refreshing-overlay' })
 })
 
 chrome.runtime.onMessage.addListener(async (message: TabMessage) => {
@@ -72,7 +67,7 @@ chrome.runtime.onMessage.addListener(async (message: TabMessage) => {
       await recreateRefreshSessionAlarm()
       break
     case 'on-signed-out':
-      await refreshSession({ isSignedOut: true })
+      await refreshSession()
       break
   }
 })

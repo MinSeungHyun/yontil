@@ -6,7 +6,6 @@ export type TabMessage =
 
 interface ShowRefreshingOverlayMessage {
   type: 'refreshing-overlay'
-  show: boolean
 }
 
 interface UpdateLearnUsSesskeyMessage {
