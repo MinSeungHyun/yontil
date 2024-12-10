@@ -3,7 +3,11 @@ import {
   recreateRefreshSessionAlarm,
   REFRESH_SESSION_ALARM_NAME,
 } from '../core/alarm'
-import { LEARNUS_URL_PATTERN, YONSEI_URL_PATTERN } from '../core/constants'
+import {
+  INFRA_URL_PATTERN,
+  LEARNUS_URL_PATTERN,
+  PORTAL_URL_PATTERN,
+} from '../core/constants'
 import {
   removeLastSessionRefreshedTime,
   getShowRefreshingOverlay,
@@ -54,7 +58,7 @@ chrome.windows.onCreated.addListener(
 
 chrome.storage.onChanged.addListener(async () => {
   const tabs = await chrome.tabs.query({
-    url: [LEARNUS_URL_PATTERN, YONSEI_URL_PATTERN],
+    url: [LEARNUS_URL_PATTERN, PORTAL_URL_PATTERN, INFRA_URL_PATTERN],
   })
 
   const showRefreshingOverlay = await getShowRefreshingOverlay()
