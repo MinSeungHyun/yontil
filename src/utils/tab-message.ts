@@ -2,10 +2,10 @@ export type TabMessage =
   | ShowRefreshingOverlayMessage
   | UpdateLearnUsSesskeyMessage
   | RecreateRefreshSessionAlarmMessage
+  | OnSignedOutMessage
 
 interface ShowRefreshingOverlayMessage {
   type: 'refreshing-overlay'
-  show: boolean
 }
 
 interface UpdateLearnUsSesskeyMessage {
@@ -15,6 +15,10 @@ interface UpdateLearnUsSesskeyMessage {
 
 interface RecreateRefreshSessionAlarmMessage {
   type: 'recreate-refresh-session-alarm'
+}
+
+interface OnSignedOutMessage {
+  type: 'on-signed-out'
 }
 
 export async function sendMessageToTab(tabId: number, message: TabMessage) {

@@ -24,6 +24,20 @@
       "matches": ["https://infra.yonsei.ac.kr/sso/PmSSOService*"],
       "js": ["js/content-scripts/infra-login-page.js"]
     },
+
+    {
+      "matches": [
+        "https://ys.learnus.org/",
+        "https://ys.learnus.org/index.php*",
+        "https://ys.learnus.org/login.php*"
+      ],
+      "js": ["js/content-scripts/learnus-login-entry-page.js"]
+    },
+    {
+      "matches": ["https://portal.yonsei.ac.kr/ui/index.html*"],
+      "js": ["js/content-scripts/portal-login-entry-page.js"]
+    },
+
     {
       "matches": ["https://ys.learnus.org/*"],
       "js": ["js/content-scripts/learnus-all-pages.js", "js/vendor.js"]
@@ -35,6 +49,7 @@
       ],
       "js": ["js/content-scripts/yonsei-all-pages.js", "js/vendor.js"]
     },
+
     {
       "matches": [
         "https://ys.learnus.org/",
