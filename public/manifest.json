@@ -39,11 +39,14 @@
     },
 
     {
-      "matches": ["https://*.learnus.org/*"],
+      "matches": ["https://ys.learnus.org/*"],
       "js": ["js/content-scripts/learnus-all-pages.js", "js/vendor.js"]
     },
     {
-      "matches": ["https://*.yonsei.ac.kr/*"],
+      "matches": [
+        "https://portal.yonsei.ac.kr/*",
+        "https://infra.yonsei.ac.kr/*"
+      ],
       "js": ["js/content-scripts/yonsei-all-pages.js", "js/vendor.js"]
     },
 
@@ -58,12 +61,16 @@
   ],
 
   "permissions": ["storage", "alarms"],
-  "host_permissions": ["https://*.learnus.org/*", "https://*.yonsei.ac.kr/*"],
+  "host_permissions": [
+    "https://ys.learnus.org/*",
+    "https://portal.yonsei.ac.kr/*",
+    "https://infra.yonsei.ac.kr/*"
+  ],
 
   "web_accessible_resources": [
     {
       "resources": ["update-learnus-sesskey-script.js"],
-      "matches": ["https://*.learnus.org/*"]
+      "matches": ["https://ys.learnus.org/*"]
     }
   ]
 }
