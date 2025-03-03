@@ -11,47 +11,11 @@ import {
 dayjs.extend(relativeTime)
 dayjs.locale('ko')
 
-class TasksRefreshStatusLabel {
-  private static readonly className = 'yontil-tasks-refresh-status-label'
+function main() {
+  TasksRefreshStatusLabel.initialize()
 
-  private constructor() {}
-
-  static initialize() {
-    const headerTitleElement = document.querySelector(
-      '.front-box-header .title'
-    )
-    if (!headerTitleElement) return
-
-    const indicatorElement = document.createElement('span')
-    indicatorElement.classList.add(TasksRefreshStatusLabel.className)
-    indicatorElement.innerHTML = ''
-    headerTitleElement.append(indicatorElement)
-  }
-
-  static async update(isRefreshing: boolean): Promise<void> {
-    const element = document.querySelector(
-      `.${TasksRefreshStatusLabel.className}`
-    )
-    if (!element) return
-
-    if (isRefreshing) {
-      element.innerHTML = '할 일 불러오는 중...'
-    } else {
-      const lastUpdated = await getCoursesDataLastUpdated()
-
-      if (!lastUpdated) {
-        element.innerHTML = ''
-        return
-      }
-
-      element.innerHTML = `마지막 업데이트: ${dayjs(lastUpdated).fromNow()}`
-    }
-  }
+  refreshTasks()
 }
-
-TasksRefreshStatusLabel.initialize()
-
-refreshTasks()
 
 async function refreshTasks() {
   const courseElements = document.querySelectorAll('.my-course-lists li')
@@ -166,3 +130,43 @@ function createTasksElement() {
   tasksElement.classList.add('yontil-tasks')
   return tasksElement
 }
+
+class TasksRefreshStatusLabel {
+  private static readonly className = 'yontil-tasks-refresh-status-label'
+
+  private constructor() {}
+
+  static initialize() {
+    const headerTitleElement = document.querySelector(
+      '.front-box-header .title'
+    )
+    if (!headerTitleElement) return
+
+    const indicatorElement = document.createElement('span')
+    indicatorElement.classList.add(TasksRefreshStatusLabel.className)
+    indicatorElement.innerHTML = ''
+    headerTitleElement.append(indicatorElement)
+  }
+
+  static async update(isRefreshing: boolean): Promise<void> {
+    const element = document.querySelector(
+      `.${TasksRefreshStatusLabel.className}`
+    )
+    if (!element) return
+
+    if (isRefreshing) {
+      element.innerHTML = '할 일 불러오는 중...'
+    } else {
+      const lastUpdated = await getCoursesDataLastUpdated()
+
+      if (!lastUpdated) {
+        element.innerHTML = ''
+        return
+      }
+
+      element.innerHTML = `마지막 업데이트: ${dayjs(lastUpdated).fromNow()}`
+    }
+  }
+}
+
+main()
