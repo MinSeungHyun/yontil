@@ -14,7 +14,7 @@ dayjs.locale('ko')
 const TASKS_REFRESH_INTERVAL = 1000 * 60 * 60 // 1 hour
 
 async function main() {
-  await TasksRefreshStatusLabel.initialize({
+  await TasksRefreshElements.initialize({
     onRefresh: refreshTasks,
   })
 
@@ -23,11 +23,11 @@ async function main() {
   if (lastUpdated && Date.now() - lastUpdated > TASKS_REFRESH_INTERVAL) {
     await refreshTasks()
   } else {
-    await TasksRefreshStatusLabel.update({ isRefreshing: false })
+    await TasksRefreshElements.update({ isRefreshing: false })
   }
 
   setInterval(
-    () => TasksRefreshStatusLabel.update({ isRefreshing: false }),
+    () => TasksRefreshElements.update({ isRefreshing: false }),
     1000 * 60
   )
 }
@@ -41,7 +41,7 @@ async function refreshTasks() {
   const courseElements = document.querySelectorAll('.my-course-lists li')
   if (courseElements.length === 0) return
 
-  await TasksRefreshStatusLabel.update({ isRefreshing: true })
+  await TasksRefreshElements.update({ isRefreshing: true })
 
   showCachedTasks(courseElements)
 
@@ -73,7 +73,7 @@ async function refreshTasks() {
 
   await saveCoursesDataLastUpdated()
 
-  await TasksRefreshStatusLabel.update({ isRefreshing: false })
+  await TasksRefreshElements.update({ isRefreshing: false })
   isRefreshing = false
 }
 
@@ -152,7 +152,7 @@ function createTasksElement() {
   return tasksElement
 }
 
-class TasksRefreshStatusLabel {
+class TasksRefreshElements {
   private static readonly refreshButtonClassName = 'yontil-tasks-refresh-button'
   private static readonly labelClassName = 'yontil-tasks-refresh-status-label'
 
@@ -165,12 +165,12 @@ class TasksRefreshStatusLabel {
     if (!headerTitleElement) return
 
     const labelElement = document.createElement('span')
-    labelElement.classList.add(TasksRefreshStatusLabel.labelClassName)
+    labelElement.classList.add(TasksRefreshElements.labelClassName)
     labelElement.innerHTML = ''
 
     const refreshButtonElement = document.createElement('span')
     refreshButtonElement.classList.add(
-      TasksRefreshStatusLabel.refreshButtonClassName
+      TasksRefreshElements.refreshButtonClassName
     )
     refreshButtonElement.innerHTML = '↻'
     refreshButtonElement.addEventListener('click', onRefresh)
@@ -184,7 +184,7 @@ class TasksRefreshStatusLabel {
     isRefreshing: boolean
   }): Promise<void> {
     const element = document.querySelector(
-      `.${TasksRefreshStatusLabel.labelClassName}`
+      `.${TasksRefreshElements.labelClassName}`
     )
     if (!element) return
 
