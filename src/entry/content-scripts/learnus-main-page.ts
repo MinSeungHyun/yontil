@@ -11,17 +11,24 @@ import {
 dayjs.extend(relativeTime)
 dayjs.locale('ko')
 
-function main() {
+const TASKS_REFRESH_INTERVAL = 1000 * 60 * 60 // 1 hour
+
+async function main() {
   TasksRefreshStatusLabel.initialize()
 
-  refreshTasks()
+  const lastUpdated = await getCoursesDataLastUpdated()
+
+  if (lastUpdated && Date.now() - lastUpdated > TASKS_REFRESH_INTERVAL) {
+    await TasksRefreshStatusLabel.update(true)
+    await refreshTasks()
+  }
+
+  await TasksRefreshStatusLabel.update(false)
 }
 
 async function refreshTasks() {
   const courseElements = document.querySelectorAll('.my-course-lists li')
   if (courseElements.length === 0) return
-
-  await TasksRefreshStatusLabel.update(true)
 
   showCachedTasks(courseElements)
 
@@ -52,8 +59,6 @@ async function refreshTasks() {
   )
 
   await saveCoursesDataLastUpdated()
-
-  await TasksRefreshStatusLabel.update(false)
 }
 
 async function showCachedTasks(courseElements: NodeListOf<Element>) {
