@@ -14,25 +14,34 @@ dayjs.locale('ko')
 const TASKS_REFRESH_INTERVAL = 1000 * 60 * 60 // 1 hour
 
 async function main() {
-  TasksRefreshStatusLabel.initialize()
+  await TasksRefreshStatusLabel.initialize({
+    onRefresh: refreshTasks,
+  })
 
   const lastUpdated = await getCoursesDataLastUpdated()
 
   if (lastUpdated && Date.now() - lastUpdated > TASKS_REFRESH_INTERVAL) {
-    await TasksRefreshStatusLabel.update({ isRefreshing: true })
     await refreshTasks()
+  } else {
+    await TasksRefreshStatusLabel.update({ isRefreshing: false })
   }
 
-  await TasksRefreshStatusLabel.update({ isRefreshing: false })
   setInterval(
     () => TasksRefreshStatusLabel.update({ isRefreshing: false }),
     1000 * 60
   )
 }
 
+let isRefreshing = false
+
 async function refreshTasks() {
+  if (isRefreshing) return
+  isRefreshing = true
+
   const courseElements = document.querySelectorAll('.my-course-lists li')
   if (courseElements.length === 0) return
+
+  await TasksRefreshStatusLabel.update({ isRefreshing: true })
 
   showCachedTasks(courseElements)
 
@@ -63,6 +72,9 @@ async function refreshTasks() {
   )
 
   await saveCoursesDataLastUpdated()
+
+  await TasksRefreshStatusLabel.update({ isRefreshing: false })
+  isRefreshing = false
 }
 
 async function showCachedTasks(courseElements: NodeListOf<Element>) {
@@ -141,20 +153,29 @@ function createTasksElement() {
 }
 
 class TasksRefreshStatusLabel {
-  private static readonly className = 'yontil-tasks-refresh-status-label'
+  private static readonly refreshButtonClassName = 'yontil-tasks-refresh-button'
+  private static readonly labelClassName = 'yontil-tasks-refresh-status-label'
 
   private constructor() {}
 
-  static initialize() {
+  static async initialize({ onRefresh }: { onRefresh: () => void }) {
     const headerTitleElement = document.querySelector(
       '.front-box-header .title'
     )
     if (!headerTitleElement) return
 
-    const indicatorElement = document.createElement('span')
-    indicatorElement.classList.add(TasksRefreshStatusLabel.className)
-    indicatorElement.innerHTML = ''
-    headerTitleElement.append(indicatorElement)
+    const labelElement = document.createElement('span')
+    labelElement.classList.add(TasksRefreshStatusLabel.labelClassName)
+    labelElement.innerHTML = ''
+
+    const refreshButtonElement = document.createElement('span')
+    refreshButtonElement.classList.add(
+      TasksRefreshStatusLabel.refreshButtonClassName
+    )
+    refreshButtonElement.innerHTML = '↻'
+    refreshButtonElement.addEventListener('click', onRefresh)
+
+    headerTitleElement.append(refreshButtonElement, labelElement)
   }
 
   static async update({
@@ -163,7 +184,7 @@ class TasksRefreshStatusLabel {
     isRefreshing: boolean
   }): Promise<void> {
     const element = document.querySelector(
-      `.${TasksRefreshStatusLabel.className}`
+      `.${TasksRefreshStatusLabel.labelClassName}`
     )
     if (!element) return
 
