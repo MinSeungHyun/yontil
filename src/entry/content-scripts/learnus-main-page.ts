@@ -14,6 +14,7 @@ dayjs.locale('ko')
 const TASKS_REFRESH_INTERVAL = 1000 * 60 * 60 // 1 hour
 
 async function main() {
+  showCachedTasks()
   await TasksRefreshElements.initialize({
     onRefresh: refreshTasks,
   })
@@ -41,8 +42,6 @@ async function refreshTasks() {
   if (isTasksRefreshing) return
   isTasksRefreshing = true
   await TasksRefreshElements.update({ isRefreshing: true })
-
-  showCachedTasks(courseElements)
 
   const courses: {
     url: string
@@ -76,7 +75,10 @@ async function refreshTasks() {
   isTasksRefreshing = false
 }
 
-async function showCachedTasks(courseElements: NodeListOf<Element>) {
+async function showCachedTasks() {
+  const courseElements = document.querySelectorAll('.my-course-lists li')
+  if (courseElements.length === 0) return
+
   const courses = await getCoursesData()
   if (!courses) return
 
