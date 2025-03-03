@@ -35,12 +35,11 @@ async function main() {
 let isRefreshing = false
 
 async function refreshTasks() {
-  if (isRefreshing) return
-  isRefreshing = true
-
   const courseElements = document.querySelectorAll('.my-course-lists li')
   if (courseElements.length === 0) return
 
+  if (isRefreshing) return
+  isRefreshing = true
   await TasksRefreshElements.update({ isRefreshing: true })
 
   showCachedTasks(courseElements)
