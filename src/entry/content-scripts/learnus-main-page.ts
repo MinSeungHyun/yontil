@@ -32,14 +32,14 @@ async function main() {
   )
 }
 
-let isRefreshing = false
+let isTasksRefreshing = false
 
 async function refreshTasks() {
   const courseElements = document.querySelectorAll('.my-course-lists li')
   if (courseElements.length === 0) return
 
-  if (isRefreshing) return
-  isRefreshing = true
+  if (isTasksRefreshing) return
+  isTasksRefreshing = true
   await TasksRefreshElements.update({ isRefreshing: true })
 
   showCachedTasks(courseElements)
@@ -73,7 +73,7 @@ async function refreshTasks() {
   await saveCoursesDataLastUpdated()
 
   await TasksRefreshElements.update({ isRefreshing: false })
-  isRefreshing = false
+  isTasksRefreshing = false
 }
 
 async function showCachedTasks(courseElements: NodeListOf<Element>) {
