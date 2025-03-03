@@ -20,7 +20,7 @@
   display: block;
 }
 
-.yontil-refreshing-tasks-indicator {
+.yontil-tasks-refresh-status-label {
   font-size: 0.8rem;
   font-weight: 400;
   color: #454545;

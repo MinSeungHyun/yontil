@@ -1,4 +1,55 @@
-import { getCoursesData, saveCoursesData } from '../../core/task/course-data'
+import dayjs from 'dayjs'
+import 'dayjs/locale/ko'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import {
+  getCoursesData,
+  getCoursesDataLastUpdated,
+  saveCoursesData,
+  saveCoursesDataLastUpdated,
+} from '../../core/task/course-data'
+
+dayjs.extend(relativeTime)
+dayjs.locale('ko')
+
+class TasksRefreshStatusLabel {
+  private static readonly className = 'yontil-tasks-refresh-status-label'
+
+  private constructor() {}
+
+  static initialize() {
+    const headerTitleElement = document.querySelector(
+      '.front-box-header .title'
+    )
+    if (!headerTitleElement) return
+
+    const indicatorElement = document.createElement('span')
+    indicatorElement.classList.add(TasksRefreshStatusLabel.className)
+    indicatorElement.innerHTML = ''
+    headerTitleElement.append(indicatorElement)
+  }
+
+  static async update(isRefreshing: boolean): Promise<void> {
+    const element = document.querySelector(
+      `.${TasksRefreshStatusLabel.className}`
+    )
+    if (!element) return
+
+    if (isRefreshing) {
+      element.innerHTML = '할 일 불러오는 중...'
+    } else {
+      const lastUpdated = await getCoursesDataLastUpdated()
+
+      if (!lastUpdated) {
+        element.innerHTML = ''
+        return
+      }
+
+      element.innerHTML = `마지막 업데이트: ${dayjs(lastUpdated).fromNow()}`
+    }
+  }
+}
+
+TasksRefreshStatusLabel.initialize()
 
 refreshTasks()
 
@@ -6,7 +57,7 @@ async function refreshTasks() {
   const courseElements = document.querySelectorAll('.my-course-lists li')
   if (courseElements.length === 0) return
 
-  showRefreshingTasksIndicator()
+  await TasksRefreshStatusLabel.update(true)
 
   showCachedTasks(courseElements)
 
@@ -36,7 +87,9 @@ async function refreshTasks() {
     }))
   )
 
-  hideRefreshingTasksIndicator()
+  await saveCoursesDataLastUpdated()
+
+  await TasksRefreshStatusLabel.update(false)
 }
 
 async function showCachedTasks(courseElements: NodeListOf<Element>) {
@@ -70,23 +123,6 @@ async function fetchCourseTasks(courseUrl: string): Promise<Element[]> {
   )
 
   return [...fixedTasks, ...weekTasks]
-}
-
-function showRefreshingTasksIndicator() {
-  const headerTitleElement = document.querySelector('.front-box-header .title')
-  if (!headerTitleElement) return
-
-  const indicatorElement = document.createElement('span')
-  indicatorElement.classList.add('yontil-refreshing-tasks-indicator')
-  indicatorElement.innerHTML = '할 일 불러오는 중...'
-  headerTitleElement.append(indicatorElement)
-}
-
-function hideRefreshingTasksIndicator() {
-  const indicatorElement = document.querySelector(
-    '.yontil-refreshing-tasks-indicator'
-  )
-  indicatorElement?.remove()
 }
 
 function showHtmlTasks(courseElement: Element, tasks: string[]) {
