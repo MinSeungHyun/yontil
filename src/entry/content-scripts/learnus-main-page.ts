@@ -21,7 +21,7 @@ async function main() {
 
   const lastUpdated = await getCoursesDataLastUpdated()
 
-  if (lastUpdated && Date.now() - lastUpdated > TASKS_REFRESH_INTERVAL) {
+  if (!lastUpdated || Date.now() - lastUpdated > TASKS_REFRESH_INTERVAL) {
     await refreshTasks()
   } else {
     await TasksRefreshElements.update({ isRefreshing: false })
