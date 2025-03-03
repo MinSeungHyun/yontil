@@ -55,6 +55,14 @@
   padding: unset;
 }
 
+.yontil-tasks .activity li {
+  border: unset;
+  background-color: unset;
+  display: list-item;
+  align-items: unset;
+  padding: 0;
+}
+
 /*
 From here to the end of the file
 Copied from https://ys.learnus.org/theme/styles.php/coursemosv2/1727860802_1/all and modified only selectors
