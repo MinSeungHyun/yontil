@@ -24,6 +24,10 @@ async function main() {
   }
 
   await TasksRefreshStatusLabel.update({ isRefreshing: false })
+  setInterval(
+    () => TasksRefreshStatusLabel.update({ isRefreshing: false }),
+    1000 * 60
+  )
 }
 
 async function refreshTasks() {
