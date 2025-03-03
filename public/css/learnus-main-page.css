@@ -20,11 +20,19 @@
   display: block;
 }
 
-.yontil-refreshing-tasks-indicator {
+.yontil-tasks-refresh-button {
+  cursor: pointer;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #4e4e4eff;
+  padding: 0.5rem;
+  margin-left: 0.2rem;
+}
+
+.yontil-tasks-refresh-status-label {
   font-size: 0.8rem;
   font-weight: 400;
   color: #454545;
-  margin-left: 0.5rem;
 }
 
 .yontil-tasks {

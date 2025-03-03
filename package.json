@@ -10,6 +10,7 @@
     "style": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
+    "dayjs": "^1.11.13",
     "node-forge": "^1.3.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
