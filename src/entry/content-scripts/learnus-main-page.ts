@@ -19,11 +19,11 @@ async function main() {
   const lastUpdated = await getCoursesDataLastUpdated()
 
   if (lastUpdated && Date.now() - lastUpdated > TASKS_REFRESH_INTERVAL) {
-    await TasksRefreshStatusLabel.update(true)
+    await TasksRefreshStatusLabel.update({ isRefreshing: true })
     await refreshTasks()
   }
 
-  await TasksRefreshStatusLabel.update(false)
+  await TasksRefreshStatusLabel.update({ isRefreshing: false })
 }
 
 async function refreshTasks() {
@@ -153,7 +153,11 @@ class TasksRefreshStatusLabel {
     headerTitleElement.append(indicatorElement)
   }
 
-  static async update(isRefreshing: boolean): Promise<void> {
+  static async update({
+    isRefreshing,
+  }: {
+    isRefreshing: boolean
+  }): Promise<void> {
     const element = document.querySelector(
       `.${TasksRefreshStatusLabel.className}`
     )
