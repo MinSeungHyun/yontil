@@ -15,6 +15,7 @@ const TASKS_REFRESH_INTERVAL = 1000 * 60 * 60 // 1 hour
 
 async function main() {
   showCachedTasks()
+  TasksSwitchElements.initialize()
   await TasksRefreshElements.initialize({
     onRefresh: refreshTasks,
   })
@@ -197,6 +198,38 @@ class TasksRefreshElements {
 
       element.innerHTML = `마지막 업데이트: ${dayjs(lastUpdated).fromNow()}`
     }
+  }
+}
+
+class TasksSwitchElements {
+  private static readonly switchClassName = 'yontil-tasks-switch'
+
+  private constructor() {}
+
+  static initialize() {
+    this.moveActionElement()
+    this.addSwitch()
+  }
+
+  private static moveActionElement() {
+    const actionElement = document.querySelector(
+      '.front-box.front-box-course .action'
+    )
+    if (!actionElement) return
+
+    document.querySelector('.front-box.front-box-course')?.append(actionElement)
+  }
+
+  private static addSwitch() {
+    const switchElement = document.createElement('span')
+    switchElement.classList.add(this.switchClassName)
+    switchElement.innerHTML = '할 일 목록 끄기'
+    switchElement.addEventListener('click', () => {
+      console.log('test')
+    })
+    document
+      .querySelector('.front-box.front-box-course .front-box-header')
+      ?.append(switchElement)
   }
 }
 
