@@ -166,13 +166,11 @@ class TasksRefreshElements {
     if (!headerTitleElement) return
 
     const labelElement = document.createElement('span')
-    labelElement.classList.add(TasksRefreshElements.labelClassName)
+    labelElement.classList.add(this.labelClassName)
     labelElement.innerHTML = ''
 
     const refreshButtonElement = document.createElement('span')
-    refreshButtonElement.classList.add(
-      TasksRefreshElements.refreshButtonClassName
-    )
+    refreshButtonElement.classList.add(this.refreshButtonClassName)
     refreshButtonElement.innerHTML = '↻'
     refreshButtonElement.addEventListener('click', onRefresh)
 
@@ -184,9 +182,7 @@ class TasksRefreshElements {
   }: {
     isRefreshing: boolean
   }): Promise<void> {
-    const element = document.querySelector(
-      `.${TasksRefreshElements.labelClassName}`
-    )
+    const element = document.querySelector(`.${this.labelClassName}`)
     if (!element) return
 
     if (isRefreshing) {
