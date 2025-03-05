@@ -103,10 +103,10 @@ async function fetchCourseTasks(courseUrl: string): Promise<Element[]> {
   const document = parser.parseFromString(html, 'text/html')
 
   const fixedTasks = document.querySelectorAll(
-    '.course-box-top .activity:has(img[src="https://ys.learnus.org/theme/image.php/coursemosv2/core/1740359370/i/completion-auto-n"])'
+    '.course-box-top .activity:has(img[src$="completion-auto-n"])'
   )
   const weekTasks = document.querySelectorAll(
-    '.total-sections .activity:has(img[src="https://ys.learnus.org/theme/image.php/coursemosv2/core/1740359370/i/completion-auto-n"])'
+    '.total-sections .activity:has(img[src$="completion-auto-n"])'
   )
 
   return [...fixedTasks, ...weekTasks]
