@@ -1,4 +1,4 @@
-import { saveLoginData } from '../../core/login/login-data'
+import { setLoginData } from '../../core/login/login-data-repository'
 
 let id: string | undefined
 let password: string | undefined
@@ -17,6 +17,6 @@ const loginButton = document.getElementById('loginBtn')
 
 loginButton?.addEventListener('click', (event) => {
   if (id && password) {
-    saveLoginData({ id, password })
+    setLoginData({ id, password })
   }
 })

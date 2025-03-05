@@ -1,4 +1,4 @@
-import { isSessionRefreshNeeded } from './login/login-status'
+import { getIsSessionRefreshNeeded } from './login/login-status-repository'
 import { refreshSession } from './login/refresh-session'
 
 export function startListeningNetworkStatus(): void {
@@ -15,7 +15,7 @@ function handleConnectionChange(): void {
 }
 
 async function handleOnline(): Promise<void> {
-  if (await isSessionRefreshNeeded()) {
+  if (await getIsSessionRefreshNeeded()) {
     await refreshSession()
   }
 }

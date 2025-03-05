@@ -7,14 +7,14 @@ export interface LoginData {
   password: string
 }
 
-export async function saveLoginData(loginData: LoginData): Promise<void> {
+export async function setLoginData(loginData: LoginData): Promise<void> {
   const loginDataString = btoa(JSON.stringify(loginData))
   await chrome.storage.local.set({ [LOGIN_DATA_KEY]: loginDataString })
 
   await onSessionRefreshed()
 }
 
-export async function loadLoginData(): Promise<LoginData | null> {
+export async function getLoginData(): Promise<LoginData | null> {
   const { loginData } = await chrome.storage.local.get(LOGIN_DATA_KEY)
   if (!loginData) return null
 

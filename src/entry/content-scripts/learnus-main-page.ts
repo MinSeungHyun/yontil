@@ -4,9 +4,9 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import {
   getCoursesData,
   getCoursesDataLastUpdated,
-  saveCoursesData,
-  saveCoursesDataLastUpdated,
-} from '../../core/task/course-data'
+  setCoursesData,
+  setCoursesDataLastUpdated,
+} from '../../core/task/course-data-repository'
 
 dayjs.extend(relativeTime)
 dayjs.locale('ko')
@@ -62,14 +62,14 @@ async function refreshTasks() {
     showTasks(course.element, course.tasks)
   }
 
-  await saveCoursesData(
+  await setCoursesData(
     courses.map((course) => ({
       courseUrl: course.url,
       tasks: course.tasks.map((task) => task.outerHTML),
     }))
   )
 
-  await saveCoursesDataLastUpdated()
+  await setCoursesDataLastUpdated()
 
   await TasksRefreshElements.update({ isRefreshing: false })
   isTasksRefreshing = false

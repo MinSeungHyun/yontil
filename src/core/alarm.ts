@@ -1,5 +1,5 @@
 import { sendMessageToBackground } from '../utils/tab-message'
-import { SESSION_EXPIRATION_TIME_IN_MINUTES } from './login/login-status'
+import { SESSION_EXPIRATION_TIME_IN_MINUTES } from './login/login-status-repository'
 
 const REFRESH_SESSION_PERIOD_IN_MINUTES = SESSION_EXPIRATION_TIME_IN_MINUTES - 1
 

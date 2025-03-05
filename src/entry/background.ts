@@ -9,13 +9,13 @@ import {
   PORTAL_URL_PATTERN,
 } from '../core/constants'
 import {
-  removeLastSessionRefreshedTime,
   getShowRefreshingOverlay,
-} from '../core/login/login-status'
-import { startListeningNetworkStatus } from '../core/network-status'
+  removeLastSessionRefreshedTime,
+} from '../core/login/login-status-repository'
 import { refreshSession } from '../core/login/refresh-session'
-import { sendMessageToTabs } from '../utils/tab-message'
+import { startListeningNetworkStatus } from '../core/network-status'
 import { migrateLocalStorageKey } from '../utils/migrate-storage-key'
+import { sendMessageToTabs } from '../utils/tab-message'
 
 chrome.runtime.onInstalled.addListener(async (details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.UPDATE) {
