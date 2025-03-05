@@ -71,6 +71,10 @@
   padding: 0;
 }
 
+.front-box.front-box-course .front-box-header > .action {
+  display: none;
+}
+
 .front-box.front-box-course > .action {
   margin-top: 1rem;
   text-align: right;
