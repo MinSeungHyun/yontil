@@ -9,7 +9,7 @@ export interface Course {
   tasks: string[]
 }
 
-export async function saveCoursesData(courses: Course[]): Promise<void> {
+export async function setCoursesData(courses: Course[]): Promise<void> {
   await chrome.storage.local.set<CoursesData>({ [COURSES_DATA_KEY]: courses })
 }
 
@@ -25,7 +25,7 @@ export interface CoursesDataLastUpdated {
   [COURSES_DATA_LAST_UPDATED_KEY]: number | undefined
 }
 
-export async function saveCoursesDataLastUpdated(): Promise<void> {
+export async function setCoursesDataLastUpdated(): Promise<void> {
   await chrome.storage.local.set<CoursesDataLastUpdated>({
     [COURSES_DATA_LAST_UPDATED_KEY]: Date.now(),
   })

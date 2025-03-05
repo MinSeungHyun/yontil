@@ -1,4 +1,4 @@
-import { saveLoginData } from '../../core/login/login-data'
+import { setLoginData } from '../../core/login/login-data-repository'
 
 const loginForm = document.getElementById('ssoLoginForm')
 
@@ -8,6 +8,6 @@ loginForm?.addEventListener('submit', (event) => {
   const password = formData.get('password') as string | null
 
   if (id && password) {
-    saveLoginData({ id, password })
+    setLoginData({ id, password })
   }
 })
