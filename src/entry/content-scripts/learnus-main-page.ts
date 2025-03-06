@@ -3,13 +3,13 @@ import {
   getCoursesDataLastUpdated,
   setCoursesData,
   setCoursesDataLastUpdated,
-} from '../../core/task/course-data-repository'
-import TasksRefreshElement from '../../core/task/tasks-refresh-element'
+} from '../../core/tasks/course-data-repository'
+import TasksRefreshElement from '../../core/tasks/tasks-refresh-element'
 import {
   getTasksEnabled,
   setTasksEnabled,
-} from '../../core/task/tasks-setting-repository'
-import TasksSwitchElement from '../../core/task/tasks-switch-element'
+} from '../../core/tasks/tasks-setting-repository'
+import TasksSwitchElement from '../../core/tasks/tasks-switch-element'
 
 const TASKS_REFRESH_INTERVAL = 1000 * 60 * 60 // 1 hour
 
