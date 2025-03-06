@@ -7,15 +7,27 @@ import {
   setCoursesData,
   setCoursesDataLastUpdated,
 } from '../../core/task/course-data-repository'
+import {
+  getTasksEnabled,
+  setTasksEnabled,
+} from '../../core/task/tasks-setting-repository'
 
 dayjs.extend(relativeTime)
 dayjs.locale('ko')
 
 const TASKS_REFRESH_INTERVAL = 1000 * 60 * 60 // 1 hour
 
+let isTasksRefreshing = false
+
 async function main() {
   showCachedTasks()
-  TasksSwitchElements.initialize()
+
+  const isTasksEnabled = await getTasksEnabled()
+  TasksSwitchElements.initialize({
+    isEnabled: isTasksEnabled,
+    onClick: handleTasksSwitchClick,
+  })
+
   await TasksRefreshElements.initialize({
     onRefresh: refreshTasks,
   })
@@ -34,7 +46,11 @@ async function main() {
   )
 }
 
-let isTasksRefreshing = false
+async function handleTasksSwitchClick(isEnabled: boolean) {
+  isEnabled = !isEnabled
+  TasksSwitchElements.updateSwitch({ isEnabled })
+  await setTasksEnabled(isEnabled)
+}
 
 async function refreshTasks() {
   const courseElements = document.querySelectorAll('.my-course-lists li')
@@ -203,12 +219,30 @@ class TasksRefreshElements {
 
 class TasksSwitchElements {
   private static readonly switchClassName = 'yontil-tasks-switch'
+  private static _isEnabled: boolean = false
+
+  static get isEnabled(): boolean {
+    return this._isEnabled
+  }
+
+  private static set isEnabled(isEnabled: boolean) {
+    this._isEnabled = isEnabled
+  }
 
   private constructor() {}
 
-  static initialize() {
+  static initialize({
+    isEnabled,
+    onClick,
+  }: {
+    isEnabled: boolean
+    onClick: (isEnabled: boolean) => void
+  }) {
+    this._isEnabled = isEnabled
+
     this.moveActionElement()
-    this.addSwitch()
+    this.addSwitch({ onClick })
+    this.updateSwitch({ isEnabled })
   }
 
   private static moveActionElement() {
@@ -220,16 +254,30 @@ class TasksSwitchElements {
     document.querySelector('.front-box.front-box-course')?.append(actionElement)
   }
 
-  private static addSwitch() {
+  private static addSwitch({
+    onClick,
+  }: {
+    onClick: (isEnabled: boolean) => void
+  }) {
     const switchElement = document.createElement('span')
     switchElement.classList.add(this.switchClassName)
-    switchElement.innerHTML = '할 일 목록 끄기'
-    switchElement.addEventListener('click', () => {
-      console.log('test')
-    })
+    switchElement.addEventListener('click', () => onClick(this.isEnabled))
     document
       .querySelector('.front-box.front-box-course .front-box-header')
       ?.append(switchElement)
+  }
+
+  static updateSwitch({ isEnabled }: { isEnabled: boolean }) {
+    this.isEnabled = isEnabled
+
+    const switchElement = document.querySelector(`.${this.switchClassName}`)
+    if (!switchElement) return
+
+    if (isEnabled) {
+      switchElement.innerHTML = '할 일 목록 끄기'
+    } else {
+      switchElement.innerHTML = '할 일 목록 켜기'
+    }
   }
 }
 
