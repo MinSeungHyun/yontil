@@ -1,7 +1,6 @@
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { getCoursesDataLastUpdated } from './course-data-repository'
 
 dayjs.extend(relativeTime)
 dayjs.locale('ko')
@@ -12,7 +11,7 @@ export default class TasksRefreshElement {
 
   private constructor() {}
 
-  static async initialize({ onRefresh }: { onRefresh: () => void }) {
+  static initialize({ onRefresh }: { onRefresh: () => void }) {
     const headerTitleElement = document.querySelector(
       '.front-box-header .title'
     )
@@ -30,25 +29,22 @@ export default class TasksRefreshElement {
     headerTitleElement.append(refreshButtonElement, labelElement)
   }
 
-  static async update({
+  static update({
     isRefreshing,
+    lastUpdated,
   }: {
     isRefreshing: boolean
-  }): Promise<void> {
+    lastUpdated?: number | null
+  }) {
     const element = document.querySelector(`.${this.labelClassName}`)
     if (!element) return
 
     if (isRefreshing) {
       element.innerHTML = '할 일 불러오는 중...'
-    } else {
-      const lastUpdated = await getCoursesDataLastUpdated()
-
-      if (!lastUpdated) {
-        element.innerHTML = ''
-        return
-      }
-
+    } else if (lastUpdated) {
       element.innerHTML = `마지막 업데이트: ${dayjs(lastUpdated).fromNow()}`
+    } else {
+      element.innerHTML = ''
     }
   }
 }

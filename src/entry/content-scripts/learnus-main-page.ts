@@ -25,7 +25,7 @@ async function main() {
     onClick: handleTasksSwitchClick,
   })
 
-  await TasksRefreshElement.initialize({
+  TasksRefreshElement.initialize({
     onRefresh: refreshTasks,
   })
 
@@ -34,13 +34,13 @@ async function main() {
   if (!lastUpdated || Date.now() - lastUpdated > TASKS_REFRESH_INTERVAL) {
     await refreshTasks()
   } else {
-    await TasksRefreshElement.update({ isRefreshing: false })
+    TasksRefreshElement.update({ isRefreshing: false, lastUpdated })
   }
 
-  setInterval(
-    () => TasksRefreshElement.update({ isRefreshing: false }),
-    1000 * 60
-  )
+  setInterval(async () => {
+    const lastUpdated = await getCoursesDataLastUpdated() // TODO
+    TasksRefreshElement.update({ isRefreshing: false, lastUpdated })
+  }, 1000 * 60)
 }
 
 async function handleTasksSwitchClick(isEnabled: boolean) {
@@ -52,7 +52,7 @@ async function handleTasksSwitchClick(isEnabled: boolean) {
 async function refreshTasks() {
   if (isTasksRefreshing) return
   isTasksRefreshing = true
-  await TasksRefreshElement.update({ isRefreshing: true })
+  TasksRefreshElement.update({ isRefreshing: true })
 
   const tasksCourses: TasksCourse[] = await fetchTasks()
 
@@ -60,16 +60,19 @@ async function refreshTasks() {
     TasksListElement.showTasks(tasksCourse.element, tasksCourse.taskElements)
   }
 
+  TasksRefreshElement.update({
+    isRefreshing: false,
+    lastUpdated: Date.now(),
+  })
+
   await setCoursesData(
     tasksCourses.map((tasksCourse) => ({
       courseUrl: tasksCourse.url,
       tasks: tasksCourse.taskElements.map((task) => task.outerHTML),
     }))
   )
-
   await setCoursesDataLastUpdated()
 
-  await TasksRefreshElement.update({ isRefreshing: false })
   isTasksRefreshing = false
 }
 
