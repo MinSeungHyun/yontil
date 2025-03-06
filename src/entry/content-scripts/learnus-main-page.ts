@@ -1,19 +1,15 @@
-import dayjs from 'dayjs'
-import 'dayjs/locale/ko'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import {
   getCoursesData,
   getCoursesDataLastUpdated,
   setCoursesData,
   setCoursesDataLastUpdated,
 } from '../../core/task/course-data-repository'
+import TasksRefreshElement from '../../core/task/tasks-refresh-element'
 import {
   getTasksEnabled,
   setTasksEnabled,
 } from '../../core/task/tasks-setting-repository'
-
-dayjs.extend(relativeTime)
-dayjs.locale('ko')
+import TasksSwitchElement from '../../core/task/tasks-switch-element'
 
 const TASKS_REFRESH_INTERVAL = 1000 * 60 * 60 // 1 hour
 
@@ -23,12 +19,12 @@ async function main() {
   showCachedTasks()
 
   const isTasksEnabled = await getTasksEnabled()
-  TasksSwitchElements.initialize({
+  TasksSwitchElement.initialize({
     isEnabled: isTasksEnabled,
     onClick: handleTasksSwitchClick,
   })
 
-  await TasksRefreshElements.initialize({
+  await TasksRefreshElement.initialize({
     onRefresh: refreshTasks,
   })
 
@@ -37,18 +33,18 @@ async function main() {
   if (!lastUpdated || Date.now() - lastUpdated > TASKS_REFRESH_INTERVAL) {
     await refreshTasks()
   } else {
-    await TasksRefreshElements.update({ isRefreshing: false })
+    await TasksRefreshElement.update({ isRefreshing: false })
   }
 
   setInterval(
-    () => TasksRefreshElements.update({ isRefreshing: false }),
+    () => TasksRefreshElement.update({ isRefreshing: false }),
     1000 * 60
   )
 }
 
 async function handleTasksSwitchClick(isEnabled: boolean) {
   isEnabled = !isEnabled
-  TasksSwitchElements.updateSwitch({ isEnabled })
+  TasksSwitchElement.updateSwitch({ isEnabled })
   await setTasksEnabled(isEnabled)
 }
 
@@ -58,7 +54,7 @@ async function refreshTasks() {
 
   if (isTasksRefreshing) return
   isTasksRefreshing = true
-  await TasksRefreshElements.update({ isRefreshing: true })
+  await TasksRefreshElement.update({ isRefreshing: true })
 
   const courses: {
     url: string
@@ -88,7 +84,7 @@ async function refreshTasks() {
 
   await setCoursesDataLastUpdated()
 
-  await TasksRefreshElements.update({ isRefreshing: false })
+  await TasksRefreshElement.update({ isRefreshing: false })
   isTasksRefreshing = false
 }
 
@@ -168,117 +164,6 @@ function createTasksElement() {
   const tasksElement = document.createElement('ul')
   tasksElement.classList.add('yontil-tasks')
   return tasksElement
-}
-
-class TasksRefreshElements {
-  private static readonly refreshButtonClassName = 'yontil-tasks-refresh-button'
-  private static readonly labelClassName = 'yontil-tasks-refresh-status-label'
-
-  private constructor() {}
-
-  static async initialize({ onRefresh }: { onRefresh: () => void }) {
-    const headerTitleElement = document.querySelector(
-      '.front-box-header .title'
-    )
-    if (!headerTitleElement) return
-
-    const labelElement = document.createElement('span')
-    labelElement.classList.add(this.labelClassName)
-    labelElement.innerHTML = ''
-
-    const refreshButtonElement = document.createElement('span')
-    refreshButtonElement.classList.add(this.refreshButtonClassName)
-    refreshButtonElement.innerHTML = '↻'
-    refreshButtonElement.addEventListener('click', onRefresh)
-
-    headerTitleElement.append(refreshButtonElement, labelElement)
-  }
-
-  static async update({
-    isRefreshing,
-  }: {
-    isRefreshing: boolean
-  }): Promise<void> {
-    const element = document.querySelector(`.${this.labelClassName}`)
-    if (!element) return
-
-    if (isRefreshing) {
-      element.innerHTML = '할 일 불러오는 중...'
-    } else {
-      const lastUpdated = await getCoursesDataLastUpdated()
-
-      if (!lastUpdated) {
-        element.innerHTML = ''
-        return
-      }
-
-      element.innerHTML = `마지막 업데이트: ${dayjs(lastUpdated).fromNow()}`
-    }
-  }
-}
-
-class TasksSwitchElements {
-  private static readonly switchClassName = 'yontil-tasks-switch'
-  private static _isEnabled: boolean = false
-
-  static get isEnabled(): boolean {
-    return this._isEnabled
-  }
-
-  private static set isEnabled(isEnabled: boolean) {
-    this._isEnabled = isEnabled
-  }
-
-  private constructor() {}
-
-  static initialize({
-    isEnabled,
-    onClick,
-  }: {
-    isEnabled: boolean
-    onClick: (isEnabled: boolean) => void
-  }) {
-    this._isEnabled = isEnabled
-
-    this.moveActionElement()
-    this.addSwitch({ onClick })
-    this.updateSwitch({ isEnabled })
-  }
-
-  private static moveActionElement() {
-    const actionElement = document.querySelector(
-      '.front-box.front-box-course .action'
-    )
-    if (!actionElement) return
-
-    document.querySelector('.front-box.front-box-course')?.append(actionElement)
-  }
-
-  private static addSwitch({
-    onClick,
-  }: {
-    onClick: (isEnabled: boolean) => void
-  }) {
-    const switchElement = document.createElement('span')
-    switchElement.classList.add(this.switchClassName)
-    switchElement.addEventListener('click', () => onClick(this.isEnabled))
-    document
-      .querySelector('.front-box.front-box-course .front-box-header')
-      ?.append(switchElement)
-  }
-
-  static updateSwitch({ isEnabled }: { isEnabled: boolean }) {
-    this.isEnabled = isEnabled
-
-    const switchElement = document.querySelector(`.${this.switchClassName}`)
-    if (!switchElement) return
-
-    if (isEnabled) {
-      switchElement.innerHTML = '할 일 목록 끄기'
-    } else {
-      switchElement.innerHTML = '할 일 목록 켜기'
-    }
-  }
 }
 
 main()
