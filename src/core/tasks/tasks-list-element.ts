@@ -1,0 +1,70 @@
+import { getCoursesData } from './course-data-repository'
+
+export default class TasksListElement {
+  private static readonly tasksClassName = 'yontil-tasks'
+
+  private constructor() {}
+
+  static showTasks(courseElement: Element, tasks: Element[]) {
+    let existingTasksElement = courseElement.querySelector(
+      `.${this.tasksClassName}`
+    )
+
+    if (tasks.length === 0) {
+      existingTasksElement?.remove()
+      return
+    }
+
+    if (existingTasksElement) {
+      existingTasksElement.replaceChildren(...tasks)
+      return
+    }
+
+    const newTasksElement = document.createElement('ul')
+    newTasksElement.classList.add(this.tasksClassName)
+    newTasksElement.append(...tasks)
+
+    courseElement.append(newTasksElement)
+  }
+
+  static async showCachedTasks() {
+    const courseElements = document.querySelectorAll('.my-course-lists li')
+    if (courseElements.length === 0) return
+
+    const courses = await getCoursesData()
+    if (!courses) return
+
+    for (const courseElement of courseElements) {
+      const courseLinkElement = courseElement.querySelector('.course-link')
+      if (!(courseLinkElement instanceof HTMLAnchorElement)) continue
+
+      const courseUrl = courseLinkElement.href
+      const course = courses.find((course) => course.courseUrl === courseUrl)
+      if (!course) continue
+
+      this.showHtmlTasks(courseElement, course.tasks)
+    }
+  }
+
+  private static showHtmlTasks(courseElement: Element, tasks: string[]) {
+    let existingTasksElement = courseElement.querySelector(
+      `.${this.tasksClassName}`
+    )
+
+    if (tasks.length === 0) {
+      existingTasksElement?.remove()
+      return
+    }
+
+    if (existingTasksElement) {
+      existingTasksElement.innerHTML = tasks.join('')
+      return
+    }
+
+    const newTasksElement = document.createElement('ul')
+    newTasksElement.classList.add(this.tasksClassName)
+    newTasksElement.innerHTML = tasks.join('')
+
+    courseElement.append(newTasksElement)
+  }
+}
