@@ -4,6 +4,7 @@ import {
   setCoursesData,
   setCoursesDataLastUpdated,
 } from '../../core/tasks/course-data-repository'
+import fetchTasks, { TasksCourse } from '../../core/tasks/fetch-tasks'
 import TasksRefreshElement from '../../core/tasks/tasks-refresh-element'
 import {
   getTasksEnabled,
@@ -49,36 +50,20 @@ async function handleTasksSwitchClick(isEnabled: boolean) {
 }
 
 async function refreshTasks() {
-  const courseElements = document.querySelectorAll('.my-course-lists li')
-  if (courseElements.length === 0) return
-
   if (isTasksRefreshing) return
   isTasksRefreshing = true
   await TasksRefreshElement.update({ isRefreshing: true })
 
-  const courses: {
-    url: string
-    element: Element
-    tasks: Element[]
-  }[] = []
+  const tasksCourses: TasksCourse[] = await fetchTasks()
 
-  for (const courseElement of courseElements) {
-    const courseLinkElement = courseElement.querySelector('.course-link')
-    if (!(courseLinkElement instanceof HTMLAnchorElement)) continue
-
-    const courseUrl = courseLinkElement.href
-    const tasks = await fetchCourseTasks(courseUrl)
-    courses.push({ url: courseUrl, element: courseElement, tasks })
-  }
-
-  for (const course of courses) {
-    showTasks(course.element, course.tasks)
+  for (const tasksCourse of tasksCourses) {
+    showTasks(tasksCourse.element, tasksCourse.taskElements)
   }
 
   await setCoursesData(
-    courses.map((course) => ({
-      courseUrl: course.url,
-      tasks: course.tasks.map((task) => task.outerHTML),
+    tasksCourses.map((tasksCourse) => ({
+      courseUrl: tasksCourse.url,
+      tasks: tasksCourse.taskElements.map((task) => task.outerHTML),
     }))
   )
 
@@ -105,23 +90,6 @@ async function showCachedTasks() {
 
     showHtmlTasks(courseElement, course.tasks)
   }
-}
-
-async function fetchCourseTasks(courseUrl: string): Promise<Element[]> {
-  const response = await fetch(courseUrl)
-  const html = await response.text()
-
-  const parser = new DOMParser()
-  const document = parser.parseFromString(html, 'text/html')
-
-  const fixedTasks = document.querySelectorAll(
-    '.course-box-top .activity:has(img[src$="completion-auto-n"])'
-  )
-  const weekTasks = document.querySelectorAll(
-    '.total-sections .activity:has(img[src$="completion-auto-n"])'
-  )
-
-  return [...fixedTasks, ...weekTasks]
 }
 
 function showHtmlTasks(courseElement: Element, tasks: string[]) {
