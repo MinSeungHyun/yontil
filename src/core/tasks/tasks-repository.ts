@@ -1,4 +1,4 @@
-const IS_TASKS_ENABLED_KEY = 'isTasksEnabled'
+export const IS_TASKS_ENABLED_KEY = 'isTasksEnabled'
 const IS_TASKS_ENABLED_DEFAULT = true
 
 interface IsTasksEnabled {

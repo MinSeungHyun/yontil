@@ -4,6 +4,7 @@ export type TabMessage =
   | ShowRefreshingOverlayMessage
   | UpdateLearnUsSesskeyMessage
   | RecreateRefreshSessionAlarmMessage
+  | TasksEnabledUpdatedMessage
   | TasksRefreshingStartedMessage
   | CoursesDataUpdatedMessage
 
@@ -19,6 +20,11 @@ interface UpdateLearnUsSesskeyMessage {
 
 interface RecreateRefreshSessionAlarmMessage {
   type: 'recreate-refresh-session-alarm'
+}
+
+interface TasksEnabledUpdatedMessage {
+  type: 'tasks-enabled-updated'
+  isTasksEnabled: boolean
 }
 
 interface TasksRefreshingStartedMessage {

@@ -43,6 +43,10 @@ async function main() {
 
 chrome.runtime.onMessage.addListener((message: TabMessage) => {
   switch (message.type) {
+    case 'tasks-enabled-updated':
+      TasksSwitchElement.updateSwitch({ isEnabled: message.isTasksEnabled })
+      break
+
     case 'tasks-refreshing-started':
       TasksRefreshElement.update({ isRefreshing: true })
       break
@@ -62,9 +66,7 @@ chrome.runtime.onMessage.addListener((message: TabMessage) => {
 })
 
 async function handleTasksSwitchClick(isEnabled: boolean) {
-  isEnabled = !isEnabled
-  TasksSwitchElement.updateSwitch({ isEnabled })
-  await setIsTasksEnabled(isEnabled)
+  await setIsTasksEnabled(!isEnabled)
 }
 
 async function refreshTasks() {

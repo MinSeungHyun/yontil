@@ -19,6 +19,7 @@ import { startListeningNetworkStatus } from '../core/network-status'
 import {
   COURSES_DATA_KEY,
   COURSES_DATA_LAST_UPDATED_KEY,
+  IS_TASKS_ENABLED_KEY,
   IS_TASKS_REFRESHING_KEY,
 } from '../core/tasks/tasks-repository'
 import { migrateLocalStorageKey } from '../utils/migrate-storage-key'
@@ -78,6 +79,16 @@ chrome.storage.onChanged.addListener(async (changes) => {
     await sendMessageToTabs(tabIds, {
       type: 'refreshing-overlay',
       show: showRefreshingOverlay,
+    })
+  }
+
+  if (IS_TASKS_ENABLED_KEY in changes) {
+    const tabs = await chrome.tabs.query({ url: LEARNUS_URL_PATTERN })
+    const tabIds = tabs.map((tab) => tab.id).filter((id) => id !== undefined)
+
+    await sendMessageToTabs(tabIds, {
+      type: 'tasks-enabled-updated',
+      isTasksEnabled: changes[IS_TASKS_ENABLED_KEY]?.newValue,
     })
   }
 
