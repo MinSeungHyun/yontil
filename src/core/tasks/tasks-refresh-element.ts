@@ -9,6 +9,8 @@ export default class TasksRefreshElement {
   private static readonly refreshButtonClassName = 'yontil-tasks-refresh-button'
   private static readonly labelClassName = 'yontil-tasks-refresh-status-label'
 
+  private static lastUpdatedTextRefresher?: NodeJS.Timeout
+
   private constructor() {}
 
   static initialize({
@@ -51,10 +53,34 @@ export default class TasksRefreshElement {
 
     if (isRefreshing) {
       element.innerHTML = '할 일 불러오는 중...'
+      this.clearLastUpdatedTextRefresher()
     } else if (lastUpdated) {
-      element.innerHTML = `마지막 업데이트: ${dayjs(lastUpdated).fromNow()}`
+      this.updateLastUpdatedText(lastUpdated)
+      this.restartLastUpdatedTextRefresher(lastUpdated)
     } else {
       element.innerHTML = ''
     }
+  }
+
+  private static updateLastUpdatedText(lastUpdated: number) {
+    const element = document.querySelector(`.${this.labelClassName}`)
+    if (!element) return
+
+    element.innerHTML = `마지막 업데이트: ${dayjs(lastUpdated).fromNow()}`
+  }
+
+  private static clearLastUpdatedTextRefresher() {
+    if (this.lastUpdatedTextRefresher) {
+      clearInterval(this.lastUpdatedTextRefresher)
+      this.lastUpdatedTextRefresher = undefined
+    }
+  }
+
+  private static restartLastUpdatedTextRefresher(lastUpdated: number) {
+    this.clearLastUpdatedTextRefresher()
+
+    this.lastUpdatedTextRefresher = setInterval(async () => {
+      this.updateLastUpdatedText(lastUpdated)
+    }, 1000 * 60)
   }
 }

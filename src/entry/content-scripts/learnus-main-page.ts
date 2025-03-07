@@ -39,12 +39,6 @@ async function main() {
   ) {
     await refreshTasks()
   }
-
-  // TODO
-  // setInterval(async () => {
-  //   const lastUpdated = await getCoursesDataLastUpdated()
-  //   TasksRefreshElement.update({ isRefreshing: false, lastUpdated })
-  // }, 1000 * 60)
 }
 
 chrome.runtime.onMessage.addListener((message: TabMessage) => {
