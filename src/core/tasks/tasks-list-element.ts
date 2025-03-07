@@ -1,4 +1,4 @@
-import { Course } from './course-data-repository'
+import { Course } from './tasks-repository'
 
 export default class TasksListElement {
   private static readonly tasksClassName = 'yontil-tasks'

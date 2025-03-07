@@ -1,4 +1,4 @@
-import { Course } from '../core/tasks/course-data-repository'
+import { Course } from '../core/tasks/tasks-repository'
 
 export type TabMessage =
   | ShowRefreshingOverlayMessage
