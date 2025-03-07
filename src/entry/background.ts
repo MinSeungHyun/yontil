@@ -20,7 +20,7 @@ import {
   COURSES_DATA_KEY,
   COURSES_DATA_LAST_UPDATED_KEY,
   IS_TASKS_REFRESHING_KEY,
-} from '../core/tasks/course-data-repository'
+} from '../core/tasks/tasks-repository'
 import { migrateLocalStorageKey } from '../utils/migrate-storage-key'
 import { sendMessageToTabs, TabMessage } from '../utils/tab-message'
 

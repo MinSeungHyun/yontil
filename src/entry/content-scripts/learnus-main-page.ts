@@ -1,29 +1,25 @@
-import {
-  getCoursesData,
-  getIsTasksRefreshing,
-  setCoursesData,
-  setTasksRefreshingStarted,
-} from '../../core/tasks/course-data-repository'
 import fetchTasks, { TasksCourse } from '../../core/tasks/fetch-tasks'
 import TasksListElement from '../../core/tasks/tasks-list-element'
 import TasksRefreshElement from '../../core/tasks/tasks-refresh-element'
 import {
-  getTasksEnabled,
-  setTasksEnabled,
-} from '../../core/tasks/tasks-setting-repository'
+  getIsTasksRefreshing,
+  getTasksInitialState,
+  setCoursesData,
+  setIsTasksEnabled,
+  setTasksRefreshingStarted,
+} from '../../core/tasks/tasks-repository'
 import TasksSwitchElement from '../../core/tasks/tasks-switch-element'
 import { TabMessage } from '../../utils/tab-message'
 
 const TASKS_REFRESH_INTERVAL = 1000 * 60 * 60 // 1 hour
 
 async function main() {
-  const isTasksRefreshing = await getIsTasksRefreshing()
-  const { coursesData, coursesDataLastUpdated } = await getCoursesData()
-  const isTasksEnabled = await getTasksEnabled()
+  const { isTasksEnabled, isTasksRefreshing, courses, coursesLastUpdated } =
+    await getTasksInitialState()
 
   TasksRefreshElement.initialize({
     isRefreshing: isTasksRefreshing,
-    lastUpdated: coursesDataLastUpdated,
+    lastUpdated: coursesLastUpdated,
     onRefresh: refreshTasks,
   })
 
@@ -32,14 +28,14 @@ async function main() {
     onClick: handleTasksSwitchClick,
   })
 
-  if (coursesData) {
-    TasksListElement.showTasks(coursesData)
+  if (courses) {
+    TasksListElement.showTasks(courses)
   }
 
   if (
     !isTasksRefreshing &&
-    (!coursesDataLastUpdated ||
-      Date.now() - coursesDataLastUpdated > TASKS_REFRESH_INTERVAL)
+    (!coursesLastUpdated ||
+      Date.now() - coursesLastUpdated > TASKS_REFRESH_INTERVAL)
   ) {
     await refreshTasks()
   }
@@ -74,7 +70,7 @@ chrome.runtime.onMessage.addListener((message: TabMessage) => {
 async function handleTasksSwitchClick(isEnabled: boolean) {
   isEnabled = !isEnabled
   TasksSwitchElement.updateSwitch({ isEnabled })
-  await setTasksEnabled(isEnabled)
+  await setIsTasksEnabled(isEnabled)
 }
 
 async function refreshTasks() {
