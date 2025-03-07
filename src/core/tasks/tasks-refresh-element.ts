@@ -11,7 +11,15 @@ export default class TasksRefreshElement {
 
   private constructor() {}
 
-  static initialize({ onRefresh }: { onRefresh: () => void }) {
+  static initialize({
+    isRefreshing,
+    lastUpdated,
+    onRefresh,
+  }: {
+    isRefreshing: boolean
+    lastUpdated?: number
+    onRefresh: () => void
+  }) {
     const headerTitleElement = document.querySelector(
       '.front-box-header .title'
     )
@@ -27,6 +35,8 @@ export default class TasksRefreshElement {
     refreshButtonElement.addEventListener('click', onRefresh)
 
     headerTitleElement.append(refreshButtonElement, labelElement)
+
+    this.update({ isRefreshing, lastUpdated })
   }
 
   static update({
@@ -34,7 +44,7 @@ export default class TasksRefreshElement {
     lastUpdated,
   }: {
     isRefreshing: boolean
-    lastUpdated?: number | null
+    lastUpdated?: number
   }) {
     const element = document.querySelector(`.${this.labelClassName}`)
     if (!element) return

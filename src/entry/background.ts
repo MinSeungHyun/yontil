@@ -10,12 +10,19 @@ import {
 } from '../core/constants'
 import {
   getShowRefreshingOverlay,
+  IS_SESSION_REFRESHING_KEY,
+  LAST_SESSION_REFRESHED_TIME_KEY,
   removeLastSessionRefreshedTime,
 } from '../core/login/login-status-repository'
 import { refreshSession } from '../core/login/refresh-session'
 import { startListeningNetworkStatus } from '../core/network-status'
+import {
+  COURSES_DATA_KEY,
+  COURSES_DATA_LAST_UPDATED_KEY,
+  IS_TASKS_REFRESHING_KEY,
+} from '../core/tasks/course-data-repository'
 import { migrateLocalStorageKey } from '../utils/migrate-storage-key'
-import { sendMessageToTabs } from '../utils/tab-message'
+import { sendMessageToTabs, TabMessage } from '../utils/tab-message'
 
 chrome.runtime.onInstalled.addListener(async (details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.UPDATE) {
@@ -56,21 +63,46 @@ chrome.windows.onCreated.addListener(
   { windowTypes: ['normal'] }
 )
 
-chrome.storage.onChanged.addListener(async () => {
-  const tabs = await chrome.tabs.query({
-    url: [LEARNUS_URL_PATTERN, PORTAL_URL_PATTERN, INFRA_URL_PATTERN],
-  })
+chrome.storage.onChanged.addListener(async (changes) => {
+  if (
+    LAST_SESSION_REFRESHED_TIME_KEY in changes ||
+    IS_SESSION_REFRESHING_KEY in changes
+  ) {
+    const tabs = await chrome.tabs.query({
+      url: [LEARNUS_URL_PATTERN, PORTAL_URL_PATTERN, INFRA_URL_PATTERN],
+    })
 
-  const showRefreshingOverlay = await getShowRefreshingOverlay()
+    const showRefreshingOverlay = await getShowRefreshingOverlay()
 
-  const tabIds = tabs.map((tab) => tab.id).filter((id) => id !== undefined)
-  await sendMessageToTabs(tabIds, {
-    type: 'refreshing-overlay',
-    show: showRefreshingOverlay,
-  })
+    const tabIds = tabs.map((tab) => tab.id).filter((id) => id !== undefined)
+    await sendMessageToTabs(tabIds, {
+      type: 'refreshing-overlay',
+      show: showRefreshingOverlay,
+    })
+  }
+
+  if (changes[IS_TASKS_REFRESHING_KEY]?.newValue) {
+    const tabs = await chrome.tabs.query({ url: LEARNUS_URL_PATTERN })
+    const tabIds = tabs.map((tab) => tab.id).filter((id) => id !== undefined)
+
+    await sendMessageToTabs(tabIds, {
+      type: 'tasks-refreshing-started',
+    })
+  }
+
+  if (COURSES_DATA_KEY in changes || COURSES_DATA_LAST_UPDATED_KEY in changes) {
+    const tabs = await chrome.tabs.query({ url: LEARNUS_URL_PATTERN })
+    const tabIds = tabs.map((tab) => tab.id).filter((id) => id !== undefined)
+
+    await sendMessageToTabs(tabIds, {
+      type: 'courses-data-updated',
+      courses: changes[COURSES_DATA_KEY]?.newValue,
+      lastUpdated: changes[COURSES_DATA_LAST_UPDATED_KEY]?.newValue,
+    })
+  }
 })
 
-chrome.runtime.onMessage.addListener(async (message) => {
+chrome.runtime.onMessage.addListener(async (message: TabMessage) => {
   switch (message.type) {
     case 'recreate-refresh-session-alarm':
       await recreateRefreshSessionAlarm()

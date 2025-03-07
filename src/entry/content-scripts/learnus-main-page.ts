@@ -1,7 +1,8 @@
 import {
-  getCoursesDataLastUpdated,
+  getCoursesData,
+  getIsTasksRefreshing,
   setCoursesData,
-  setCoursesDataLastUpdated,
+  setTasksRefreshingStarted,
 } from '../../core/tasks/course-data-repository'
 import fetchTasks, { TasksCourse } from '../../core/tasks/fetch-tasks'
 import TasksListElement from '../../core/tasks/tasks-list-element'
@@ -11,37 +12,64 @@ import {
   setTasksEnabled,
 } from '../../core/tasks/tasks-setting-repository'
 import TasksSwitchElement from '../../core/tasks/tasks-switch-element'
+import { TabMessage } from '../../utils/tab-message'
 
 const TASKS_REFRESH_INTERVAL = 1000 * 60 * 60 // 1 hour
 
-let isTasksRefreshing = false
-
 async function main() {
-  TasksListElement.showCachedTasks()
-
+  const isTasksRefreshing = await getIsTasksRefreshing()
+  const { coursesData, coursesDataLastUpdated } = await getCoursesData()
   const isTasksEnabled = await getTasksEnabled()
+
+  TasksRefreshElement.initialize({
+    isRefreshing: isTasksRefreshing,
+    lastUpdated: coursesDataLastUpdated,
+    onRefresh: refreshTasks,
+  })
+
   TasksSwitchElement.initialize({
     isEnabled: isTasksEnabled,
     onClick: handleTasksSwitchClick,
   })
 
-  TasksRefreshElement.initialize({
-    onRefresh: refreshTasks,
-  })
-
-  const lastUpdated = await getCoursesDataLastUpdated()
-
-  if (!lastUpdated || Date.now() - lastUpdated > TASKS_REFRESH_INTERVAL) {
-    await refreshTasks()
-  } else {
-    TasksRefreshElement.update({ isRefreshing: false, lastUpdated })
+  if (coursesData) {
+    TasksListElement.showTasks(coursesData)
   }
 
-  setInterval(async () => {
-    const lastUpdated = await getCoursesDataLastUpdated() // TODO
-    TasksRefreshElement.update({ isRefreshing: false, lastUpdated })
-  }, 1000 * 60)
+  if (
+    !isTasksRefreshing &&
+    (!coursesDataLastUpdated ||
+      Date.now() - coursesDataLastUpdated > TASKS_REFRESH_INTERVAL)
+  ) {
+    await refreshTasks()
+  }
+
+  // TODO
+  // setInterval(async () => {
+  //   const lastUpdated = await getCoursesDataLastUpdated()
+  //   TasksRefreshElement.update({ isRefreshing: false, lastUpdated })
+  // }, 1000 * 60)
 }
+
+chrome.runtime.onMessage.addListener((message: TabMessage) => {
+  switch (message.type) {
+    case 'tasks-refreshing-started':
+      TasksRefreshElement.update({ isRefreshing: true })
+      break
+
+    case 'courses-data-updated':
+      if (message.courses) {
+        TasksListElement.showTasks(message.courses)
+      }
+      if (message.lastUpdated) {
+        TasksRefreshElement.update({
+          isRefreshing: false,
+          lastUpdated: message.lastUpdated,
+        })
+      }
+      break
+  }
+})
 
 async function handleTasksSwitchClick(isEnabled: boolean) {
   isEnabled = !isEnabled
@@ -50,20 +78,10 @@ async function handleTasksSwitchClick(isEnabled: boolean) {
 }
 
 async function refreshTasks() {
-  if (isTasksRefreshing) return
-  isTasksRefreshing = true
-  TasksRefreshElement.update({ isRefreshing: true })
+  if (await getIsTasksRefreshing()) return
+  await setTasksRefreshingStarted()
 
   const tasksCourses: TasksCourse[] = await fetchTasks()
-
-  for (const tasksCourse of tasksCourses) {
-    TasksListElement.showTasks(tasksCourse.element, tasksCourse.taskElements)
-  }
-
-  TasksRefreshElement.update({
-    isRefreshing: false,
-    lastUpdated: Date.now(),
-  })
 
   await setCoursesData(
     tasksCourses.map((tasksCourse) => ({
@@ -71,9 +89,6 @@ async function refreshTasks() {
       tasks: tasksCourse.taskElements.map((task) => task.outerHTML),
     }))
   )
-  await setCoursesDataLastUpdated()
-
-  isTasksRefreshing = false
 }
 
 main()

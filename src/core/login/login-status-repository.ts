@@ -1,4 +1,4 @@
-const LAST_SESSION_REFRESHED_TIME_KEY = 'lastSessionRefreshedTime'
+export const LAST_SESSION_REFRESHED_TIME_KEY = 'lastSessionRefreshedTime'
 
 export const SESSION_EXPIRATION_TIME_IN_MINUTES = 60
 
@@ -29,7 +29,7 @@ async function getIsLoggedIn(): Promise<boolean> {
   )
 }
 
-const IS_SESSION_REFRESHING_KEY = 'isSessionRefreshing'
+export const IS_SESSION_REFRESHING_KEY = 'isSessionRefreshing'
 
 interface IsSessionRefreshing {
   [IS_SESSION_REFRESHING_KEY]: boolean | undefined
