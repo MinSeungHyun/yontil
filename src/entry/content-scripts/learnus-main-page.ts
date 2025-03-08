@@ -15,6 +15,9 @@ import { TabMessage } from '../../utils/tab-message'
 const TASKS_REFRESH_INTERVAL = 1000 * 60 * 60 // 1 hour
 
 async function main() {
+  const isInCoursesPage = document.querySelector('.my-course-lists')
+  if (!isInCoursesPage) return
+
   const isTasksEnabled = await getIsTasksEnabled()
 
   TasksSwitchElement.initialize({
