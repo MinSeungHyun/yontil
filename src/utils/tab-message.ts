@@ -1,7 +1,12 @@
+import { Course } from '../core/tasks/tasks-repository'
+
 export type TabMessage =
   | ShowRefreshingOverlayMessage
   | UpdateLearnUsSesskeyMessage
   | RecreateRefreshSessionAlarmMessage
+  | TasksEnabledUpdatedMessage
+  | TasksRefreshingStartedMessage
+  | CoursesDataUpdatedMessage
 
 interface ShowRefreshingOverlayMessage {
   type: 'refreshing-overlay'
@@ -15,6 +20,21 @@ interface UpdateLearnUsSesskeyMessage {
 
 interface RecreateRefreshSessionAlarmMessage {
   type: 'recreate-refresh-session-alarm'
+}
+
+interface TasksEnabledUpdatedMessage {
+  type: 'tasks-enabled-updated'
+  isTasksEnabled: boolean
+}
+
+interface TasksRefreshingStartedMessage {
+  type: 'tasks-refreshing-started'
+}
+
+interface CoursesDataUpdatedMessage {
+  type: 'courses-data-updated'
+  courses?: Course[]
+  lastUpdated?: number
 }
 
 export async function sendMessageToTab(tabId: number, message: TabMessage) {

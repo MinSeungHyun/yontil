@@ -71,6 +71,37 @@
   padding: 0;
 }
 
+.front-box.front-box-course .front-box-header > .action {
+  display: none;
+}
+
+.front-box.front-box-course > .action {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+.front-box.front-box-course .title {
+  width: auto !important;
+  margin-bottom: 0 !important;
+}
+
+.front-box.front-box-course > .front-box-header {
+  justify-content: space-between;
+  align-items: end;
+  gap: 0.5rem;
+}
+
+.yontil-tasks-switch {
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #454545;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 /*
 From here to the end of the file
 Copied from https://ys.learnus.org/theme/styles.php/coursemosv2/1727860802_1/all and modified only selectors
