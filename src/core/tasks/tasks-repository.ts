@@ -65,24 +65,17 @@ export async function getCoursesData(): Promise<CoursesData> {
 }
 
 interface TasksInitialState {
-  isTasksEnabled: boolean
   isTasksRefreshing: boolean
   courses: Course[] | undefined
   coursesLastUpdated: number | undefined
 }
 
 export async function getTasksInitialState(): Promise<TasksInitialState> {
-  const state = await chrome.storage.local.get<
-    IsTasksEnabled & IsTasksRefreshing & CoursesData
-  >([
-    IS_TASKS_ENABLED_KEY,
-    IS_TASKS_REFRESHING_KEY,
-    COURSES_DATA_KEY,
-    COURSES_DATA_LAST_UPDATED_KEY,
-  ])
+  const state = await chrome.storage.local.get<IsTasksRefreshing & CoursesData>(
+    [IS_TASKS_REFRESHING_KEY, COURSES_DATA_KEY, COURSES_DATA_LAST_UPDATED_KEY]
+  )
 
   return {
-    isTasksEnabled: state[IS_TASKS_ENABLED_KEY] ?? IS_TASKS_ENABLED_DEFAULT,
     isTasksRefreshing:
       state[IS_TASKS_REFRESHING_KEY] ?? IS_TASKS_REFRESHING_DEFAULT,
     courses: state[COURSES_DATA_KEY],

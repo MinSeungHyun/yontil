@@ -41,4 +41,10 @@ export default class TasksListElement {
 
     courseElement.append(newTasksElement)
   }
+
+  static dispose() {
+    document.querySelectorAll(`.${this.tasksClassName}`).forEach((element) => {
+      element.remove()
+    })
+  }
 }

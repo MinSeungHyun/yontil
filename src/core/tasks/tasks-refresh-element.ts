@@ -83,4 +83,10 @@ export default class TasksRefreshElement {
       this.updateLastUpdatedText(lastUpdated)
     }, 1000 * 60)
   }
+
+  static dispose() {
+    this.clearLastUpdatedTextRefresher()
+    document.querySelector(`.${this.refreshButtonClassName}`)?.remove()
+    document.querySelector(`.${this.labelClassName}`)?.remove()
+  }
 }
