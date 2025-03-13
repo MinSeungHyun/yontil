@@ -3,7 +3,6 @@ import TasksListElement from '../../core/tasks/tasks-list-element'
 import TasksRefreshElement from '../../core/tasks/tasks-refresh-element'
 import {
   getIsTasksEnabled,
-  getIsTasksRefreshing,
   getTasksInitialState,
   setCoursesData,
   setIsTasksEnabled,
@@ -47,7 +46,7 @@ async function initializeTasks() {
   const isTasksNeedRefresh =
     !coursesLastUpdated ||
     Date.now() - coursesLastUpdated > TASKS_REFRESH_INTERVAL
-  if (!isTasksRefreshing && isTasksNeedRefresh) {
+  if (isTasksNeedRefresh) {
     await refreshTasks()
   }
 }
@@ -92,7 +91,6 @@ async function handleTasksSwitchClick(isEnabled: boolean) {
 }
 
 async function refreshTasks() {
-  if (await getIsTasksRefreshing()) return
   await setTasksRefreshingStarted()
 
   const tasksCourses: TasksCourse[] = await fetchTasks()
