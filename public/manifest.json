@@ -38,6 +38,7 @@
     {
       "matches": [
         "https://ys.learnus.org/",
+        "https://ys.learnus.org/?*",
         "https://ys.learnus.org/index.php*"
       ],
       "js": ["js/content-scripts/learnus-main-page.js"],
