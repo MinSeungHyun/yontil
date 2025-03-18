@@ -63,10 +63,13 @@ export default class TasksRefreshElement {
   }
 
   private static updateLastUpdatedText(lastUpdated: number) {
-    const element = document.querySelector(`.${this.labelClassName}`)
+    const element = document.querySelector(
+      `.${this.labelClassName}`
+    ) as HTMLElement
     if (!element) return
 
     element.innerHTML = `마지막 업데이트: ${dayjs(lastUpdated).fromNow()}`
+    element.title = `마지막 업데이트: ${new Date(lastUpdated).toLocaleTimeString()}`
   }
 
   private static clearLastUpdatedTextRefresher() {
