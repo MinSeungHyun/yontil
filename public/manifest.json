@@ -43,6 +43,10 @@
       ],
       "js": ["js/content-scripts/learnus-main-page.js"],
       "css": ["css/learnus-main-page.css"]
+    },
+    {
+      "matches": ["https://ys.learnus.org/mod/vod/viewer.php*"],
+      "js": ["js/content-scripts/learnus-video-page.js"]
     }
   ],
 
