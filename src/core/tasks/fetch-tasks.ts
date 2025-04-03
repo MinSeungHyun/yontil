@@ -33,10 +33,10 @@ async function fetchTaskElementsInCourse(
   const document = parser.parseFromString(html, 'text/html')
 
   const fixedTasks = document.querySelectorAll(
-    '.course-box-top .activity:has(img[src$="completion-auto-n"])'
+    '.course-box-top .activity:has(img[src$="completion-auto-n"]):not(:has(div.availabilityinfo.isrestricted))'
   )
   const weekTasks = document.querySelectorAll(
-    '.total-sections .activity:has(img[src$="completion-auto-n"])'
+    '.total-sections .activity:has(img[src$="completion-auto-n"]):not(:has(div.availabilityinfo.isrestricted))'
   )
 
   return [...fixedTasks, ...weekTasks]
