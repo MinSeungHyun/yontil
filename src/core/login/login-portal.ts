@@ -19,6 +19,7 @@ async function fetch1() {
       a: 'aaaa',
       b: 'bbbb',
     }),
+    signal: AbortSignal.timeout(5000),
   })
 
   return parseInputTagsFromHtml(await response.text())
@@ -39,6 +40,7 @@ async function fetch2(data1: Record<string, string>) {
       a: 'aaaa',
       b: 'bbbb',
     }),
+    signal: AbortSignal.timeout(5000),
   })
 
   return parseInputTagsFromHtml(await response.text())
@@ -63,13 +65,18 @@ async function fetch3(data2: Record<string, string>) {
       a: 'aaaa',
       b: 'bbbb',
     }),
+    signal: AbortSignal.timeout(5000),
   })
 }
 
 async function fetch4() {
-  await fetch(`${PORTAL_ORIGIN}/passni/spLoginProcess.jsp`)
+  await fetch(`${PORTAL_ORIGIN}/passni/spLoginProcess.jsp`, {
+    signal: AbortSignal.timeout(5000),
+  })
 }
 
 async function fetch5() {
-  await fetch(`${PORTAL_ORIGIN}/com/lgin/SsoCtr/j_login_sso.do`)
+  await fetch(`${PORTAL_ORIGIN}/com/lgin/SsoCtr/j_login_sso.do`, {
+    signal: AbortSignal.timeout(5000),
+  })
 }

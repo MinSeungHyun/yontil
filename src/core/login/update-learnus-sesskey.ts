@@ -2,7 +2,9 @@ import { sendMessageToTabs } from '../../utils/tab-message'
 import { LEARNUS_ORIGIN, LEARNUS_URL_PATTERN } from '../constants'
 
 export default async function updateLearnUsSesskey() {
-  const response = await fetch(LEARNUS_ORIGIN)
+  const response = await fetch(LEARNUS_ORIGIN, {
+    signal: AbortSignal.timeout(5000),
+  })
   const text = await response.text()
 
   const sesskey = text.match(/sesskey":"([^"]+)/)?.[1]
