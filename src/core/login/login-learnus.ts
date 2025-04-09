@@ -26,6 +26,7 @@ async function fetch1(username: string, password: string) {
         username,
         password,
       }),
+      signal: AbortSignal.timeout(5000),
     }
   )
 
@@ -54,6 +55,7 @@ async function fetch2(
       username,
       password,
     }),
+    signal: AbortSignal.timeout(5000),
   })
 
   return parseInputTagsFromHtml(await response.text())
@@ -86,6 +88,7 @@ async function fetch3(
         username,
         password,
       }),
+      signal: AbortSignal.timeout(5000),
     }
   )
 
@@ -129,6 +132,7 @@ async function fetch4(
       username,
       password,
     }),
+    signal: AbortSignal.timeout(5000),
   })
 
   return parseInputTagsFromHtml(await response.text())
@@ -157,11 +161,14 @@ async function fetch5(
       username,
       password,
     }),
+    signal: AbortSignal.timeout(5000),
   })
 }
 
 async function fetch6() {
-  await fetch(`${LEARNUS_ORIGIN}/passni/spLoginProcess.php`)
+  await fetch(`${LEARNUS_ORIGIN}/passni/spLoginProcess.php`, {
+    signal: AbortSignal.timeout(5000),
+  })
 }
 
 function stringToHex(raw: string) {
