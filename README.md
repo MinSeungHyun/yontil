@@ -1,5 +1,9 @@
 # Yontil - Yonsei Utils
 
+![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/odenknojibaccnicjcekjbkkodpfigln?color=blue)
+![Chrome Web Store Last Updated](https://img.shields.io/chrome-web-store/last-updated/odenknojibaccnicjcekjbkkodpfigln?color=blue)
+![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/odenknojibaccnicjcekjbkkodpfigln?color=blue)
+
 <img src="images/promo_1920x1200.png" width="400px">
 
 연세대의 여러 사이트들에서 사용할 수 있는 편의 기능들을 제공하는 크롬 확장프로그램
