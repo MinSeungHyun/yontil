@@ -1,3 +1,8 @@
+import {
+  getVideoPlaybackRate,
+  setVideoPlaybackRate,
+} from '../../core/video/video-repository'
+
 addEventListener('keyup', (e) => {
   if (e.key === '>') {
     increaseVideoPlaybackRate()
@@ -6,8 +11,9 @@ addEventListener('keyup', (e) => {
   }
 })
 
+const video = document.querySelector('video')
+
 function increaseVideoPlaybackRate() {
-  const video = document.querySelector('video')
   if (!video) return
 
   const currentSpeed = video.playbackRate
@@ -17,7 +23,6 @@ function increaseVideoPlaybackRate() {
 }
 
 function decreaseVideoPlaybackRate() {
-  const video = document.querySelector('video')
   if (!video) return
 
   const currentSpeed = video.playbackRate
@@ -25,3 +30,15 @@ function decreaseVideoPlaybackRate() {
 
   video.playbackRate = currentSpeed - 0.25
 }
+
+video?.addEventListener('ratechange', async () => {
+  const currentPlaybackRate = video.playbackRate
+  await setVideoPlaybackRate(currentPlaybackRate)
+})
+
+video?.addEventListener('loadeddata', async () => {
+  const savedPlaybackRate = await getVideoPlaybackRate()
+  if (savedPlaybackRate) {
+    video.playbackRate = savedPlaybackRate
+  }
+})
