@@ -6,7 +6,7 @@ import {
   getTasksInitialState,
   setCoursesData,
   setIsTasksEnabled,
-  setTasksRefreshingStarted,
+  setIsTasksRefreshing,
 } from '../../core/tasks/tasks-repository'
 import TasksSwitchElement from '../../core/tasks/tasks-switch-element'
 import { TabMessage } from '../../utils/tab-message'
@@ -68,8 +68,8 @@ chrome.runtime.onMessage.addListener((message: TabMessage) => {
       }
       break
 
-    case 'tasks-refreshing-started':
-      TasksRefreshElement.update({ isRefreshing: true })
+    case 'tasks-refreshing-updated':
+      TasksRefreshElement.update({ isRefreshing: message.isRefreshing })
       break
 
     case 'courses-data-updated':
@@ -90,17 +90,33 @@ async function handleTasksSwitchClick(isEnabled: boolean) {
   await setIsTasksEnabled(!isEnabled)
 }
 
+let isTasksRefreshingInThisTab = false
+
+window.addEventListener('beforeunload', async () => {
+  if (isTasksRefreshingInThisTab) {
+    await setIsTasksRefreshing(false)
+  }
+})
+
 async function refreshTasks() {
-  await setTasksRefreshingStarted()
+  isTasksRefreshingInThisTab = true
+  await setIsTasksRefreshing(true)
 
-  const tasksCourses: TasksCourse[] = await fetchTasks()
+  try {
+    const tasksCourses: TasksCourse[] = await fetchTasks()
 
-  await setCoursesData(
-    tasksCourses.map((tasksCourse) => ({
-      courseUrl: tasksCourse.url,
-      tasks: tasksCourse.taskElements.map((task) => task.outerHTML),
-    }))
-  )
+    await setCoursesData(
+      tasksCourses.map((tasksCourse) => ({
+        courseUrl: tasksCourse.url,
+        tasks: tasksCourse.taskElements.map((task) => task.outerHTML),
+      }))
+    )
+  } catch (e) {
+    console.log(`[${new Date().toISOString()}] Failed to fetch tasks:`, e)
+  }
+
+  await setIsTasksRefreshing(false)
+  isTasksRefreshingInThisTab = false
 }
 
 main()
