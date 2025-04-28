@@ -5,7 +5,7 @@ export type TabMessage =
   | UpdateLearnUsSesskeyMessage
   | RecreateRefreshSessionAlarmMessage
   | TasksEnabledUpdatedMessage
-  | TasksRefreshingStartedMessage
+  | TasksRefreshingUpdatedMessage
   | CoursesDataUpdatedMessage
 
 interface ShowRefreshingOverlayMessage {
@@ -27,8 +27,9 @@ interface TasksEnabledUpdatedMessage {
   isTasksEnabled: boolean
 }
 
-interface TasksRefreshingStartedMessage {
-  type: 'tasks-refreshing-started'
+interface TasksRefreshingUpdatedMessage {
+  type: 'tasks-refreshing-updated'
+  isRefreshing: boolean
 }
 
 interface CoursesDataUpdatedMessage {

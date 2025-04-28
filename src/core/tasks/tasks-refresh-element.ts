@@ -10,6 +10,7 @@ export default class TasksRefreshElement {
   private static readonly labelClassName = 'yontil-tasks-refresh-status-label'
 
   private static lastUpdatedTextRefresher?: NodeJS.Timeout
+  private static lastUpdated?: number
 
   private constructor() {}
 
@@ -48,28 +49,43 @@ export default class TasksRefreshElement {
     isRefreshing: boolean
     lastUpdated?: number
   }) {
-    const element = document.querySelector(`.${this.labelClassName}`)
-    if (!element) return
-
     if (isRefreshing) {
-      element.innerHTML = '할 일 불러오는 중...'
+      this.updateLastUpdatedTextElement({
+        text: '할 일 불러오는 중...',
+      })
       this.clearLastUpdatedTextRefresher()
-    } else if (lastUpdated) {
-      this.updateLastUpdatedText(lastUpdated)
-      this.restartLastUpdatedTextRefresher(lastUpdated)
     } else {
-      element.innerHTML = ''
+      this.updateLastUpdated(lastUpdated ?? this.lastUpdated)
     }
   }
 
-  private static updateLastUpdatedText(lastUpdated: number) {
+  private static updateLastUpdated(lastUpdated?: number) {
+    if (!lastUpdated) return
+
+    this.lastUpdated = lastUpdated
+
+    this.updateLastUpdatedTextElement({
+      text: `마지막 업데이트: ${dayjs(lastUpdated).fromNow()}`,
+      tooltip: `마지막 업데이트: ${new Date(lastUpdated).toLocaleTimeString()}`,
+    })
+
+    this.restartLastUpdatedTextRefresher(lastUpdated)
+  }
+
+  private static updateLastUpdatedTextElement({
+    text,
+    tooltip,
+  }: {
+    text: string
+    tooltip?: string
+  }) {
     const element = document.querySelector(
       `.${this.labelClassName}`
     ) as HTMLElement
     if (!element) return
 
-    element.innerHTML = `마지막 업데이트: ${dayjs(lastUpdated).fromNow()}`
-    element.title = `마지막 업데이트: ${new Date(lastUpdated).toLocaleTimeString()}`
+    element.innerHTML = text
+    element.title = tooltip ?? ''
   }
 
   private static clearLastUpdatedTextRefresher() {
@@ -83,7 +99,7 @@ export default class TasksRefreshElement {
     this.clearLastUpdatedTextRefresher()
 
     this.lastUpdatedTextRefresher = setInterval(async () => {
-      this.updateLastUpdatedText(lastUpdated)
+      this.updateLastUpdated(lastUpdated)
     }, 1000 * 60)
   }
 

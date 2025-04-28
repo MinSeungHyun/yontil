@@ -92,12 +92,13 @@ chrome.storage.onChanged.addListener(async (changes) => {
     })
   }
 
-  if (changes[IS_TASKS_REFRESHING_KEY]?.newValue) {
+  if (IS_TASKS_REFRESHING_KEY in changes) {
     const tabs = await chrome.tabs.query({ url: LEARNUS_URL_PATTERN })
     const tabIds = tabs.map((tab) => tab.id).filter((id) => id !== undefined)
 
     await sendMessageToTabs(tabIds, {
-      type: 'tasks-refreshing-started',
+      type: 'tasks-refreshing-updated',
+      isRefreshing: changes[IS_TASKS_REFRESHING_KEY]?.newValue,
     })
   }
 

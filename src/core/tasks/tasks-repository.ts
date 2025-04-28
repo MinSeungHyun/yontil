@@ -24,9 +24,11 @@ interface IsTasksRefreshing {
   [IS_TASKS_REFRESHING_KEY]: boolean | undefined
 }
 
-export async function setTasksRefreshingStarted(): Promise<void> {
+export async function setIsTasksRefreshing(
+  isRefreshing: boolean
+): Promise<void> {
   await chrome.storage.local.set<IsTasksRefreshing>({
-    [IS_TASKS_REFRESHING_KEY]: true,
+    [IS_TASKS_REFRESHING_KEY]: isRefreshing,
   })
 }
 
@@ -50,8 +52,7 @@ export interface CoursesData {
 }
 
 export async function setCoursesData(courses: Course[]): Promise<void> {
-  await chrome.storage.local.set<IsTasksRefreshing & CoursesData>({
-    [IS_TASKS_REFRESHING_KEY]: false,
+  await chrome.storage.local.set<CoursesData>({
     [COURSES_DATA_KEY]: courses,
     [COURSES_DATA_LAST_UPDATED_KEY]: Date.now(),
   })
