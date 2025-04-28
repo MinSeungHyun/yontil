@@ -90,7 +90,16 @@ async function handleTasksSwitchClick(isEnabled: boolean) {
   await setIsTasksEnabled(!isEnabled)
 }
 
+let isTasksRefreshingInThisTab = false
+
+window.addEventListener('beforeunload', async () => {
+  if (isTasksRefreshingInThisTab) {
+    await setIsTasksRefreshing(false)
+  }
+})
+
 async function refreshTasks() {
+  isTasksRefreshingInThisTab = true
   await setIsTasksRefreshing(true)
 
   try {
@@ -107,6 +116,7 @@ async function refreshTasks() {
   }
 
   await setIsTasksRefreshing(false)
+  isTasksRefreshingInThisTab = false
 }
 
 main()
