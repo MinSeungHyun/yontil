@@ -1,14 +1,6 @@
 export default class TasksSwitchElement {
   private static readonly switchClassName = 'yontil-tasks-switch'
-  private static _isEnabled: boolean = false
-
-  static get isEnabled(): boolean {
-    return this._isEnabled
-  }
-
-  private static set isEnabled(isEnabled: boolean) {
-    this._isEnabled = isEnabled
-  }
+  private static isEnabled: boolean = false
 
   private constructor() {}
 
@@ -19,7 +11,7 @@ export default class TasksSwitchElement {
     isEnabled: boolean
     onClick: (isEnabled: boolean) => void
   }) {
-    this._isEnabled = isEnabled
+    this.isEnabled = isEnabled
 
     this.moveActionElement()
     this.addSwitch({ onClick })
