@@ -87,7 +87,7 @@
 
 .front-box.front-box-course > .front-box-header {
   justify-content: space-between;
-  align-items: end;
+  align-items: stretch;
   gap: 1rem;
 }
 
@@ -99,13 +99,15 @@
 .yontil-learnus-main-page-actions-container > button,
 .yontil-learnus-main-page-actions-container > a {
   cursor: pointer;
-  padding: 0.5rem 1rem;
+  padding: 0 1rem;
   background-color: #fff;
   border: 1px solid #e5e5e5;
   border-radius: 5px;
   font-size: 0.85rem;
   font-weight: 400;
   color: #454545;
+  min-height: 28px;
+  align-content: center;
   transition: background-color 0.2s ease-in-out;
 
   &:hover {
