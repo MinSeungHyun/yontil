@@ -1,3 +1,4 @@
+import LearnusMainPageActionsElement from '../../core/learnus-main-page-actions-element'
 import fetchTasks, { TasksCourse } from '../../core/tasks/fetch-tasks'
 import TasksListElement from '../../core/tasks/tasks-list-element'
 import TasksRefreshElement from '../../core/tasks/tasks-refresh-element'
@@ -8,7 +9,6 @@ import {
   setIsTasksEnabled,
   setIsTasksRefreshing,
 } from '../../core/tasks/tasks-repository'
-import TasksSwitchElement from '../../core/tasks/tasks-switch-element'
 import { TabMessage } from '../../utils/tab-message'
 
 const TASKS_REFRESH_INTERVAL = 1000 * 60 * 60 // 1 hour
@@ -19,9 +19,9 @@ async function main() {
 
   const isTasksEnabled = await getIsTasksEnabled()
 
-  TasksSwitchElement.initialize({
-    isEnabled: isTasksEnabled,
-    onClick: handleTasksSwitchClick,
+  LearnusMainPageActionsElement.initialize({
+    isTasksEnabled,
+    onTasksSwitchClick: handleTasksSwitchClick,
   })
 
   if (isTasksEnabled) {
@@ -59,7 +59,9 @@ function disposeTasks() {
 chrome.runtime.onMessage.addListener((message: TabMessage) => {
   switch (message.type) {
     case 'tasks-enabled-updated':
-      TasksSwitchElement.updateSwitch({ isEnabled: message.isTasksEnabled })
+      LearnusMainPageActionsElement.updateTasksSwitch({
+        isTasksEnabled: message.isTasksEnabled,
+      })
 
       if (message.isTasksEnabled) {
         initializeTasks()
