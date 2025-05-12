@@ -1,5 +1,9 @@
 export default class LearnusMainPageActionsElement {
+  private static readonly actionsContainerClassName =
+    'yontil-learnus-main-page-actions-container'
   private static readonly tasksSwitchClassName = 'yontil-tasks-switch'
+  private static readonly reorderCoursesButtonClassName =
+    'yontil-reorder-courses-button'
   private static isTasksEnabled: boolean = false
 
   private constructor() {}
@@ -14,8 +18,10 @@ export default class LearnusMainPageActionsElement {
     this.isTasksEnabled = isTasksEnabled
 
     this.movePreviousActionElement()
+    this.addActionsContainer()
     this.addTasksSwitch({ onTasksSwitchClick })
     this.updateTasksSwitch({ isTasksEnabled })
+    this.addReorderCoursesButton()
   }
 
   private static movePreviousActionElement() {
@@ -27,18 +33,26 @@ export default class LearnusMainPageActionsElement {
     document.querySelector('.front-box.front-box-course')?.append(actionElement)
   }
 
+  private static addActionsContainer() {
+    const actionsContainer = document.createElement('div')
+    actionsContainer.classList.add(this.actionsContainerClassName)
+    document
+      .querySelector('.front-box.front-box-course .front-box-header')
+      ?.append(actionsContainer)
+  }
+
   private static addTasksSwitch({
     onTasksSwitchClick,
   }: {
     onTasksSwitchClick: (isTasksEnabled: boolean) => void
   }) {
-    const switchElement = document.createElement('span')
+    const switchElement = document.createElement('button')
     switchElement.classList.add(this.tasksSwitchClassName)
     switchElement.addEventListener('click', () =>
       onTasksSwitchClick(this.isTasksEnabled)
     )
     document
-      .querySelector('.front-box.front-box-course .front-box-header')
+      .querySelector(`.${this.actionsContainerClassName}`)
       ?.append(switchElement)
   }
 
@@ -55,5 +69,15 @@ export default class LearnusMainPageActionsElement {
     } else {
       switchElement.innerHTML = '할 일 목록 켜기'
     }
+  }
+
+  private static addReorderCoursesButton() {
+    const reorderCoursesButton = document.createElement('a')
+    reorderCoursesButton.innerHTML = '강좌 순서 변경'
+    reorderCoursesButton.href = '/local/ubion/user/mycourse_setting.php'
+    reorderCoursesButton.classList.add(this.reorderCoursesButtonClassName)
+    document
+      .querySelector(`.${this.actionsContainerClassName}`)
+      ?.append(reorderCoursesButton)
   }
 }

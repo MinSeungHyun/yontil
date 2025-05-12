@@ -88,17 +88,33 @@
 .front-box.front-box-course > .front-box-header {
   justify-content: space-between;
   align-items: end;
+  gap: 1rem;
+}
+
+.yontil-learnus-main-page-actions-container {
+  display: flex;
   gap: 0.5rem;
 }
 
-.yontil-tasks-switch {
+.yontil-learnus-main-page-actions-container > button,
+.yontil-learnus-main-page-actions-container > a {
   cursor: pointer;
-  font-size: 0.8rem;
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 5px;
+  font-size: 0.85rem;
   font-weight: 400;
   color: #454545;
+  transition: background-color 0.2s ease-in-out;
 
   &:hover {
-    text-decoration: underline;
+    color: #454545;
+    background-color: #f1f1f1;
+  }
+
+  &:focus {
+    outline: none;
   }
 }
 
