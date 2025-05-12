@@ -32,7 +32,7 @@ export async function refreshSession(): Promise<void> {
   let tryCount = 1
   const MAX_TRIES = 3
 
-  while (tryCount <= MAX_TRIES) {
+  while (tryCount <= MAX_TRIES && isRefreshing) {
     try {
       await waitUntilTabsLoaded({
         url: [LEARNUS_URL_PATTERN, PORTAL_URL_PATTERN, INFRA_URL_PATTERN],
@@ -70,4 +70,9 @@ export async function refreshSession(): Promise<void> {
 export async function onSessionRefreshed() {
   await setLastSessionRefreshedTime()
   recreateRefreshSessionAlarm()
+}
+
+export async function cancelRefreshingSession() {
+  await setIsSessionRefreshing(false)
+  isRefreshing = false
 }

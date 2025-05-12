@@ -1,6 +1,9 @@
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import RefreshingOverlay from '../../components/refreshing-overlay'
+import RefreshingOverlay, {
+  CANCEL_REFRESH_BUTTON_ID,
+} from '../../components/refreshing-overlay'
+import { sendMessageToBackground } from '../../utils/tab-message'
 import { getShowRefreshingOverlay } from './login-status-repository'
 
 interface Options {
@@ -27,8 +30,16 @@ export function setupRefreshingOverlay({ checkIsInLoginPage }: Options) {
       <RefreshingOverlay id="refreshing-overlay" />
     )
     document.body.insertAdjacentHTML('afterbegin', element)
-  }
 
+    const cancelRefreshButton = document.getElementById(
+      CANCEL_REFRESH_BUTTON_ID
+    )
+    cancelRefreshButton?.addEventListener('click', () => {
+      sendMessageToBackground({
+        type: 'cancel-refreshing-session',
+      })
+    })
+  }
   function hideRefreshingOverlay() {
     const element = document.getElementById('refreshing-overlay')
     element?.remove()

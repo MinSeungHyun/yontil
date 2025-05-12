@@ -14,7 +14,10 @@ import {
   LAST_SESSION_REFRESHED_TIME_KEY,
   removeLastSessionRefreshedTime,
 } from '../core/login/login-status-repository'
-import { refreshSession } from '../core/login/refresh-session'
+import {
+  cancelRefreshingSession,
+  refreshSession,
+} from '../core/login/refresh-session'
 import { startListeningNetworkStatus } from '../core/network-status'
 import {
   COURSES_DATA_KEY,
@@ -118,6 +121,9 @@ chrome.runtime.onMessage.addListener(async (message: TabMessage) => {
   switch (message.type) {
     case 'recreate-refresh-session-alarm':
       await recreateRefreshSessionAlarm()
+      break
+    case 'cancel-refreshing-session':
+      await cancelRefreshingSession()
       break
   }
 })
