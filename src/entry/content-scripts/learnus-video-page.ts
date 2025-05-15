@@ -36,9 +36,14 @@ video?.addEventListener('ratechange', async () => {
   await setVideoPlaybackRate(currentPlaybackRate)
 })
 
-video?.addEventListener('loadeddata', async () => {
+let isPlaybackRateInitialized = false
+
+video?.addEventListener('play', async () => {
+  if (isPlaybackRateInitialized) return
+
   const savedPlaybackRate = await getVideoPlaybackRate()
   if (savedPlaybackRate) {
+    isPlaybackRateInitialized = true
     video.playbackRate = savedPlaybackRate
   }
 })
