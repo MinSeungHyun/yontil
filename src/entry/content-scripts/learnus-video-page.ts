@@ -67,6 +67,8 @@ function initializeSeekBarPreview() {
     var hls = new Hls()
     hls.loadSource(src)
     hls.attachMedia(seekBarPreviewVideo)
+  } else if (seekBarPreviewVideo.canPlayType('application/vnd.apple.mpegurl')) {
+    seekBarPreviewVideo.src = src
   }
 
   const progressControl = document.querySelector('.vjs-progress-control')
