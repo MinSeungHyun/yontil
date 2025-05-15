@@ -1,0 +1,16 @@
+.yontil-thumbnail-preview-container {
+  width: 200px;
+  max-width: 80%;
+  display: flex;
+  position: fixed;
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+  pointer-events: none;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 8px 0px;
+  border: 1.5px solid #eeeeee;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.yontil-thumbnail-preview {
+}
