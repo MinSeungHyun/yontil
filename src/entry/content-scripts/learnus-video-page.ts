@@ -48,25 +48,25 @@ video?.addEventListener('play', async () => {
     video.playbackRate = savedPlaybackRate
   }
 
-  initializeThumbnailPreview()
+  initializeSeekBarPreview()
 })
 
-function initializeThumbnailPreview() {
+function initializeSeekBarPreview() {
   const source = document.getElementsByTagName('source')[0]
   const src = source.src
 
   const container = document.createElement('div')
-  container.classList.add('yontil-thumbnail-preview-container')
+  container.classList.add('yontil-seek-bar-preview-container')
   document.body.appendChild(container)
 
-  const thumbnailPreviewVideo = document.createElement('video')
-  thumbnailPreviewVideo.classList.add('yontil-thumbnail-preview')
-  container.appendChild(thumbnailPreviewVideo)
+  const seekBarPreviewVideo = document.createElement('video')
+  seekBarPreviewVideo.classList.add('yontil-seek-bar-preview')
+  container.appendChild(seekBarPreviewVideo)
 
   if (Hls.isSupported()) {
     var hls = new Hls()
     hls.loadSource(src)
-    hls.attachMedia(thumbnailPreviewVideo)
+    hls.attachMedia(seekBarPreviewVideo)
   }
 
   const progressControl = document.querySelector('.vjs-progress-control')
@@ -81,8 +81,7 @@ function initializeThumbnailPreview() {
 
     const percentage = offsetX / progressControlRect.width
 
-    thumbnailPreviewVideo.currentTime =
-      thumbnailPreviewVideo.duration * percentage
+    seekBarPreviewVideo.currentTime = seekBarPreviewVideo.duration * percentage
 
     container.style.top = `${progressControlRect.top - container.offsetHeight - 32}px`
     const leftMin = 16
