@@ -1,3 +1,4 @@
+import { initializeSeekBarPreview } from '../../core/video/seek-bar-preview'
 import {
   getVideoPlaybackRate,
   setVideoPlaybackRate,
@@ -36,14 +37,16 @@ video?.addEventListener('ratechange', async () => {
   await setVideoPlaybackRate(currentPlaybackRate)
 })
 
-let isPlaybackRateInitialized = false
+let isFirstPlay = true
 
 video?.addEventListener('play', async () => {
-  if (isPlaybackRateInitialized) return
+  if (!isFirstPlay) return
+  isFirstPlay = false
 
   const savedPlaybackRate = await getVideoPlaybackRate()
   if (savedPlaybackRate) {
-    isPlaybackRateInitialized = true
     video.playbackRate = savedPlaybackRate
   }
+
+  initializeSeekBarPreview()
 })

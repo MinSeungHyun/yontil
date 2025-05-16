@@ -46,7 +46,8 @@
     },
     {
       "matches": ["https://ys.learnus.org/mod/vod/viewer.php*"],
-      "js": ["js/content-scripts/learnus-video-page.js"]
+      "js": ["js/content-scripts/learnus-video-page.js"],
+      "css": ["css/learnus-video-page.css"]
     }
   ],
 
