@@ -49,7 +49,7 @@ function createPreviewVideo(container: HTMLElement): HTMLVideoElement {
   const videoSrc = document.getElementsByTagName('source')[0].src
 
   if (Hls.isSupported()) {
-    const hls = new Hls()
+    const hls = new Hls({ maxBufferLength: 1 })
     hls.loadSource(videoSrc)
     hls.attachMedia(previewVideo)
   } else if (previewVideo.canPlayType('application/vnd.apple.mpegurl')) {
