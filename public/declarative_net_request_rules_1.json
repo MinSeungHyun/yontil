@@ -1,0 +1,21 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "Referer",
+          "operation": "set",
+          "value": "https://ys.learnus.org"
+        }
+      ]
+    },
+    "condition": {
+      "urlFilter": "||ys.learnus.org/passni/sso/spLogin2.php",
+      "resourceTypes": ["xmlhttprequest"],
+      "requestMethods": ["get"]
+    }
+  }
+]

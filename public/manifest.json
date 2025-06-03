@@ -51,7 +51,7 @@
     }
   ],
 
-  "permissions": ["storage", "alarms"],
+  "permissions": ["storage", "alarms", "declarativeNetRequestWithHostAccess"],
   "host_permissions": [
     "https://ys.learnus.org/*",
     "https://portal.yonsei.ac.kr/*",
@@ -63,5 +63,15 @@
       "resources": ["update-learnus-sesskey-script.js"],
       "matches": ["https://ys.learnus.org/*"]
     }
-  ]
+  ],
+
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "declarative_net_request_rules_1.json"
+      }
+    ]
+  }
 }
