@@ -1,0 +1,18 @@
+.yontil-alrs-video-playback-rate-select {
+  margin-left: 12px;
+  background: none;
+  outline: none;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 3px 2px;
+  font-size: 12px;
+  transition:
+    border-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 1);
+    color: rgba(255, 255, 255, 1);
+  }
+}

@@ -51,7 +51,8 @@
     },
     {
       "matches": ["https://alrs.yonsei.ac.kr//vv/*"],
-      "js": ["js/content-scripts/alrs-video-page.js"]
+      "js": ["js/content-scripts/alrs-video-page.js"],
+      "css": ["css/alrs-video-page.css"]
     }
   ],
 
