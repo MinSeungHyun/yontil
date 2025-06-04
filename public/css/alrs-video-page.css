@@ -1,0 +1,18 @@
+.yontil-alrs-video-playback-rate-select {
+  height: 100%;
+  margin-left: 12px;
+  text-align: center;
+  appearance: none;
+  background: none;
+  outline: none;
+  border: none;
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+  padding: 0 16px;
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: rgba(255, 255, 255, 1);
+  }
+}
