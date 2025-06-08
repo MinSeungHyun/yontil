@@ -2,7 +2,9 @@ import { waitUntilTabsLoaded } from '../../utils/wait-until-tabs-loaded'
 import { recreateRefreshSessionAlarm } from '../alarm'
 import {
   INFRA_URL_PATTERN,
+  LEARNUS_ORIGIN,
   LEARNUS_URL_PATTERN,
+  PORTAL_ORIGIN,
   PORTAL_URL_PATTERN,
 } from '../constants'
 import { getLoginData } from './login-data-repository'
@@ -38,9 +40,13 @@ export async function refreshSession(): Promise<void> {
         url: [LEARNUS_URL_PATTERN, PORTAL_URL_PATTERN, INFRA_URL_PATTERN],
       })
 
-      await loginLearnUs(loginData.id, loginData.password)
-      updateLearnUsSesskey()
-      await loginPortal()
+      const isSessionAlive = await checkIfSessionAlive()
+
+      if (!isSessionAlive) {
+        await loginLearnUs(loginData.id, loginData.password)
+        updateLearnUsSesskey()
+        await loginPortal()
+      }
 
       await onSessionRefreshed()
 
@@ -65,6 +71,23 @@ export async function refreshSession(): Promise<void> {
 
   await setIsSessionRefreshing(false)
   isRefreshing = false
+}
+
+export async function checkIfSessionAlive(): Promise<boolean> {
+  const response = await fetch(LEARNUS_ORIGIN, {
+    signal: AbortSignal.timeout(5000),
+  })
+  const text = await response.text()
+  const isLoginPage = text.includes(
+    'https://ys.learnus.org/passni/sso/spLogin2.php'
+  )
+
+  if (isLoginPage) return false
+
+  // Refresh portal as well
+  await fetch(PORTAL_ORIGIN, { signal: AbortSignal.timeout(5000) })
+
+  return true
 }
 
 export async function onSessionRefreshed() {
