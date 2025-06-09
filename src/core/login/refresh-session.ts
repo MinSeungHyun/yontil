@@ -78,9 +78,8 @@ export async function checkIfSessionAlive(): Promise<boolean> {
     signal: AbortSignal.timeout(5000),
   })
   const text = await response.text()
-  const isLoginPage = text.includes(
-    'https://ys.learnus.org/passni/sso/spLogin2.php'
-  )
+
+  const isLoginPage = !text.includes('https://ys.learnus.org/login/logout.php')
 
   if (isLoginPage) return false
 
