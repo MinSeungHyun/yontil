@@ -4,11 +4,14 @@ import {
   INFRA_URL_PATTERN,
   LEARNUS_ORIGIN,
   LEARNUS_URL_PATTERN,
+  LIBRARY_ORIGIN,
+  LIBRARY_URL_PATTERN,
   PORTAL_ORIGIN,
   PORTAL_URL_PATTERN,
 } from '../constants'
 import { getLoginData } from './login-data-repository'
 import loginLearnUs from './login-learnus'
+import loginLibrary from './login-library'
 import loginPortal from './login-portal'
 import {
   setIsSessionRefreshing,
@@ -37,7 +40,12 @@ export async function refreshSession(): Promise<void> {
   while (tryCount <= MAX_TRIES && isRefreshing) {
     try {
       await waitUntilTabsLoaded({
-        url: [LEARNUS_URL_PATTERN, PORTAL_URL_PATTERN, INFRA_URL_PATTERN],
+        url: [
+          LEARNUS_URL_PATTERN,
+          PORTAL_URL_PATTERN,
+          LIBRARY_URL_PATTERN,
+          INFRA_URL_PATTERN,
+        ],
       })
 
       const isSessionAlive = await checkIfSessionAlive()
@@ -46,6 +54,7 @@ export async function refreshSession(): Promise<void> {
         await loginLearnUs(loginData.id, loginData.password)
         updateLearnUsSesskey()
         await loginPortal()
+        await loginLibrary()
       }
 
       await onSessionRefreshed()
@@ -83,8 +92,9 @@ export async function checkIfSessionAlive(): Promise<boolean> {
 
   if (isLoginPage) return false
 
-  // Refresh portal as well
+  // Refresh portal and library as well
   await fetch(PORTAL_ORIGIN, { signal: AbortSignal.timeout(5000) })
+  await fetch(LIBRARY_ORIGIN, { signal: AbortSignal.timeout(5000) })
 
   return true
 }
