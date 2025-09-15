@@ -50,7 +50,7 @@
       "css": ["css/learnus-video-page.css"]
     },
     {
-      "matches": ["https://alrs.yonsei.ac.kr//vv/*"],
+      "matches": ["https://alrs.yonsei.ac.kr/*shortkey=*"],
       "js": ["js/content-scripts/alrs-video-page.js"],
       "css": ["css/alrs-video-page.css"]
     }
