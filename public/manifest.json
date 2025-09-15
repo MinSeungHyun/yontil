@@ -31,7 +31,8 @@
     {
       "matches": [
         "https://portal.yonsei.ac.kr/*",
-        "https://infra.yonsei.ac.kr/*"
+        "https://infra.yonsei.ac.kr/*",
+        "https://library.yonsei.ac.kr/*"
       ],
       "js": ["js/content-scripts/yonsei-all-pages.js", "js/vendor.js"]
     },
@@ -60,7 +61,8 @@
   "host_permissions": [
     "https://ys.learnus.org/*",
     "https://portal.yonsei.ac.kr/*",
-    "https://infra.yonsei.ac.kr/*"
+    "https://infra.yonsei.ac.kr/*",
+    "https://library.yonsei.ac.kr/*"
   ],
 
   "web_accessible_resources": [
