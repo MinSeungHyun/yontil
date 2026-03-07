@@ -7,7 +7,8 @@
     "build": "pnpm run clean && webpack --config webpack/webpack.prod.js",
     "clean": "rimraf dist",
     "test": "npx jest --passWithNoTests",
-    "style": "prettier --write \"src/**/*.{ts,tsx}\""
+    "style": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "build:firefox-xpi": "bash scripts/build-firefox-xpi.sh"
   },
   "dependencies": {
     "dayjs": "^1.11.13",
