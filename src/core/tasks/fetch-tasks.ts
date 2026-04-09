@@ -32,12 +32,15 @@ async function fetchTaskElementsInCourse(
   const parser = new DOMParser()
   const document = parser.parseFromString(html, 'text/html')
 
-  const fixedTasks = document.querySelectorAll(
-    '.course-box-top .activity:has(img[src$="completion-auto-n"]):not(:has(.isrestricted))'
-  )
-  const weekTasks = document.querySelectorAll(
-    '.total-sections .activity:has(img[src$="completion-auto-n"]):not(:has(.isrestricted))'
+  const taskElements = document.querySelectorAll(
+    '.course-box-top .activity, .total-sections .activity'
   )
 
-  return [...fixedTasks, ...weekTasks]
+  return [...taskElements].filter((taskElement) => {
+    const hasIncompleteMarker = taskElement.querySelector(
+      'img[src$="completion-auto-n"]'
+    )
+    const isRestricted = taskElement.querySelector('.isrestricted')
+    return Boolean(hasIncompleteMarker) && !isRestricted
+  })
 }
