@@ -1,6 +1,5 @@
 import { parseInputTagsFromHtml } from '../../utils/parse-html-string'
 import { INFRA_ORIGIN, PORTAL_ORIGIN } from '../constants'
-import { fetchWithSession } from './fetch-with-session'
 
 export default async function loginPortal() {
   const data1 = await fetch1()
@@ -11,7 +10,7 @@ export default async function loginPortal() {
 }
 
 async function fetch1() {
-  const response = await fetchWithSession(`${PORTAL_ORIGIN}/SSOLegacy.do`, {
+  const response = await fetch(`${PORTAL_ORIGIN}/SSOLegacy.do`, {
     method: 'POST',
     body: new URLSearchParams({
       retUrl: '',
@@ -27,7 +26,7 @@ async function fetch1() {
 }
 
 async function fetch2(data1: Record<string, string>) {
-  const response = await fetchWithSession(`${INFRA_ORIGIN}/sso/PmSSOService`, {
+  const response = await fetch(`${INFRA_ORIGIN}/sso/PmSSOService`, {
     method: 'POST',
     body: new URLSearchParams({
       app_id: 'nportalYonsei',
@@ -48,7 +47,7 @@ async function fetch2(data1: Record<string, string>) {
 }
 
 async function fetch3(data2: Record<string, string>) {
-  await fetchWithSession(`${PORTAL_ORIGIN}/SSOLegacy.do?pname=spLoginData`, {
+  await fetch(`${PORTAL_ORIGIN}/SSOLegacy.do?pname=spLoginData`, {
     method: 'POST',
     redirect: 'manual',
     body: new URLSearchParams({
@@ -71,13 +70,13 @@ async function fetch3(data2: Record<string, string>) {
 }
 
 async function fetch4() {
-  await fetchWithSession(`${PORTAL_ORIGIN}/passni/spLoginProcess.jsp`, {
+  await fetch(`${PORTAL_ORIGIN}/passni/spLoginProcess.jsp`, {
     signal: AbortSignal.timeout(5000),
   })
 }
 
 async function fetch5() {
-  await fetchWithSession(`${PORTAL_ORIGIN}/com/lgin/SsoCtr/j_login_sso.do`, {
+  await fetch(`${PORTAL_ORIGIN}/com/lgin/SsoCtr/j_login_sso.do`, {
     signal: AbortSignal.timeout(5000),
   })
 }

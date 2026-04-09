@@ -1,7 +1,6 @@
 import { jsbn, pki } from 'node-forge'
 import { parseInputTagsFromHtml } from '../../utils/parse-html-string'
 import { INFRA_ORIGIN, LEARNUS_ORIGIN } from '../constants'
-import { fetchWithSession } from './fetch-with-session'
 
 export default async function loginLearnUs(
   id: string,
@@ -21,18 +20,15 @@ export default async function loginLearnUs(
  * - Sets the Referer header to "https://ys.learnus.org" for authentication validation
  */
 async function fetch1() {
-  const response = await fetchWithSession(
-    `${LEARNUS_ORIGIN}/passni/sso/spLogin2.php`,
-    {
-      signal: AbortSignal.timeout(5000),
-    }
-  )
+  const response = await fetch(`${LEARNUS_ORIGIN}/passni/sso/spLogin2.php`, {
+    signal: AbortSignal.timeout(5000),
+  })
 
   return parseInputTagsFromHtml(await response.text())
 }
 
 async function fetch2(data1: Record<string, string>) {
-  const response = await fetchWithSession(`${INFRA_ORIGIN}/sso/PmSSOService`, {
+  const response = await fetch(`${INFRA_ORIGIN}/sso/PmSSOService`, {
     method: 'POST',
     body: new URLSearchParams({
       app_id: 'ednetYonsei',
@@ -80,28 +76,25 @@ async function fetch3(
     )
   const E2 = stringToHex(E2Bytes)
 
-  const response = await fetchWithSession(
-    `${INFRA_ORIGIN}/sso/PmSSOAuthService`,
-    {
-      method: 'POST',
-      body: new URLSearchParams({
-        app_id: 'ednetYonsei',
-        retUrl: 'https://ys.learnus.org',
-        failUrl: 'https://ys.learnus.org',
-        baseUrl: 'https://ys.learnus.org',
-        loginType: 'invokeID',
-        E2,
-        refererUrl: 'https://ys.learnus.org',
-      }),
-      signal: AbortSignal.timeout(5000),
-    }
-  )
+  const response = await fetch(`${INFRA_ORIGIN}/sso/PmSSOAuthService`, {
+    method: 'POST',
+    body: new URLSearchParams({
+      app_id: 'ednetYonsei',
+      retUrl: 'https://ys.learnus.org',
+      failUrl: 'https://ys.learnus.org',
+      baseUrl: 'https://ys.learnus.org',
+      loginType: 'invokeID',
+      E2,
+      refererUrl: 'https://ys.learnus.org',
+    }),
+    signal: AbortSignal.timeout(5000),
+  })
 
   return parseInputTagsFromHtml(await response.text())
 }
 
 async function fetch4(data4: Record<string, string>) {
-  await fetchWithSession(`${LEARNUS_ORIGIN}/passni/sso/spLoginData.php`, {
+  await fetch(`${LEARNUS_ORIGIN}/passni/sso/spLoginData.php`, {
     method: 'POST',
     body: new URLSearchParams({
       app_id: 'ednetYonsei',
@@ -119,7 +112,7 @@ async function fetch4(data4: Record<string, string>) {
 }
 
 async function fetch5() {
-  await fetchWithSession(`${LEARNUS_ORIGIN}/passni/spLoginProcess.php`, {
+  await fetch(`${LEARNUS_ORIGIN}/passni/spLoginProcess.php`, {
     signal: AbortSignal.timeout(5000),
   })
 }

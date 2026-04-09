@@ -14,7 +14,6 @@ import {
   setIsSessionRefreshing,
   setLastSessionRefreshedTime,
 } from './login-status-repository'
-import { fetchWithSession } from './fetch-with-session'
 import updateLearnUsSesskey from './update-learnus-sesskey'
 
 let isRefreshing = false
@@ -75,7 +74,7 @@ export async function refreshSession(): Promise<void> {
 }
 
 export async function checkIfSessionAlive(): Promise<boolean> {
-  const response = await fetchWithSession(LEARNUS_ORIGIN, {
+  const response = await fetch(LEARNUS_ORIGIN, {
     signal: AbortSignal.timeout(5000),
   })
   const text = await response.text()
@@ -86,9 +85,7 @@ export async function checkIfSessionAlive(): Promise<boolean> {
   if (isLoginPage) return false
 
   // Refresh portal as well
-  await fetchWithSession(PORTAL_ORIGIN, {
-    signal: AbortSignal.timeout(5000),
-  })
+  await fetch(PORTAL_ORIGIN, { signal: AbortSignal.timeout(5000) })
 
   return true
 }

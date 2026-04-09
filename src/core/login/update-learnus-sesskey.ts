@@ -1,6 +1,5 @@
 import { sendMessageToTabs } from '../../utils/tab-message'
 import { LEARNUS_ORIGIN, LEARNUS_URL_PATTERN } from '../constants'
-import { fetchWithSession } from './fetch-with-session'
 
 export default async function updateLearnUsSesskey() {
   const tabs = await chrome.tabs.query({ url: [LEARNUS_URL_PATTERN] })
@@ -8,7 +7,7 @@ export default async function updateLearnUsSesskey() {
 
   if (tabIds.length === 0) return
 
-  const response = await fetchWithSession(LEARNUS_ORIGIN, {
+  const response = await fetch(LEARNUS_ORIGIN, {
     signal: AbortSignal.timeout(5000),
   })
   const text = await response.text()
