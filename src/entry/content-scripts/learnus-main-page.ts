@@ -102,17 +102,19 @@ window.addEventListener('beforeunload', async () => {
 
 async function refreshTasks() {
   isTasksRefreshingInThisTab = true
+  TasksRefreshElement.update({ isRefreshing: true })
   await setIsTasksRefreshing(true)
 
   try {
     const tasksCourses: TasksCourse[] = await fetchTasks()
+    const courses = tasksCourses.map((tasksCourse) => ({
+      courseUrl: tasksCourse.url,
+      tasks: tasksCourse.taskElements.map((task) => task.outerHTML),
+    }))
 
-    await setCoursesData(
-      tasksCourses.map((tasksCourse) => ({
-        courseUrl: tasksCourse.url,
-        tasks: tasksCourse.taskElements.map((task) => task.outerHTML),
-      }))
-    )
+    await setCoursesData(courses)
+    TasksListElement.showTasks(courses)
+    TasksRefreshElement.update({ isRefreshing: false, lastUpdated: Date.now() })
   } catch (e) {
     console.log(`[${new Date().toISOString()}] Failed to fetch tasks:`, e)
   }

@@ -12,7 +12,7 @@
   },
 
   "background": {
-    "service_worker": "js/background.js"
+    "scripts": ["js/background.js"]
   },
 
   "content_scripts": [
@@ -56,7 +56,13 @@
     }
   ],
 
-  "permissions": ["storage", "alarms", "declarativeNetRequestWithHostAccess"],
+  "permissions": [
+    "storage",
+    "alarms",
+    "declarativeNetRequestWithHostAccess",
+    "webRequest",
+    "webRequestBlocking"
+  ],
   "host_permissions": [
     "https://ys.learnus.org/*",
     "https://portal.yonsei.ac.kr/*",
@@ -78,5 +84,11 @@
         "path": "declarative_net_request_rules_1.json"
       }
     ]
+  },
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "yontil@yonsei.utils"
+    }
   }
 }

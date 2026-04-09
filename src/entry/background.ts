@@ -18,6 +18,7 @@ import {
   cancelRefreshingSession,
   refreshSession,
 } from '../core/login/refresh-session'
+import { setupLearnUsLoginRefererFallback } from '../core/login/setup-learnus-login-referer-fallback'
 import { startListeningNetworkStatus } from '../core/network-status'
 import {
   COURSES_DATA_KEY,
@@ -27,6 +28,8 @@ import {
 } from '../core/tasks/tasks-repository'
 import { migrateLocalStorageKey } from '../utils/migrate-storage-key'
 import { sendMessageToTabs, TabMessage } from '../utils/tab-message'
+
+setupLearnUsLoginRefererFallback()
 
 chrome.runtime.onInstalled.addListener(async (details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.UPDATE) {

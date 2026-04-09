@@ -1,15 +1,7 @@
-import dayjs from 'dayjs'
-import 'dayjs/locale/ko'
-import relativeTime from 'dayjs/plugin/relativeTime'
-
-dayjs.extend(relativeTime)
-dayjs.locale('ko')
-
 export default class TasksRefreshElement {
   private static readonly refreshButtonClassName = 'yontil-tasks-refresh-button'
   private static readonly labelClassName = 'yontil-tasks-refresh-status-label'
 
-  private static lastUpdatedTextRefresher?: NodeJS.Timeout
   private static lastUpdated?: number
 
   private constructor() {}
@@ -53,7 +45,6 @@ export default class TasksRefreshElement {
       this.updateLastUpdatedTextElement({
         text: '할 일 불러오는 중...',
       })
-      this.clearLastUpdatedTextRefresher()
     } else {
       this.updateLastUpdated(lastUpdated ?? this.lastUpdated)
     }
@@ -65,11 +56,9 @@ export default class TasksRefreshElement {
     this.lastUpdated = lastUpdated
 
     this.updateLastUpdatedTextElement({
-      text: `마지막 업데이트: ${dayjs(lastUpdated).fromNow()}`,
+      text: `마지막 업데이트: ${formatElapsedTime(lastUpdated)}`,
       tooltip: `마지막 업데이트: ${new Date(lastUpdated).toLocaleTimeString()}`,
     })
-
-    this.restartLastUpdatedTextRefresher(lastUpdated)
   }
 
   private static updateLastUpdatedTextElement({
@@ -88,24 +77,31 @@ export default class TasksRefreshElement {
     element.title = tooltip ?? ''
   }
 
-  private static clearLastUpdatedTextRefresher() {
-    if (this.lastUpdatedTextRefresher) {
-      clearInterval(this.lastUpdatedTextRefresher)
-      this.lastUpdatedTextRefresher = undefined
-    }
-  }
-
-  private static restartLastUpdatedTextRefresher(lastUpdated: number) {
-    this.clearLastUpdatedTextRefresher()
-
-    this.lastUpdatedTextRefresher = setInterval(async () => {
-      this.updateLastUpdated(lastUpdated)
-    }, 1000 * 60)
-  }
-
   static dispose() {
-    this.clearLastUpdatedTextRefresher()
     document.querySelector(`.${this.refreshButtonClassName}`)?.remove()
     document.querySelector(`.${this.labelClassName}`)?.remove()
   }
+}
+
+export function formatElapsedTime(
+  lastUpdated: number,
+  now = Date.now()
+): string {
+  const elapsedSeconds = Math.max(0, Math.floor((now - lastUpdated) / 1000))
+  if (elapsedSeconds < 60) {
+    return `${elapsedSeconds}초 전`
+  }
+
+  const elapsedMinutes = Math.floor(elapsedSeconds / 60)
+  if (elapsedMinutes < 60) {
+    return `${elapsedMinutes}분 전`
+  }
+
+  const elapsedHours = Math.floor(elapsedMinutes / 60)
+  if (elapsedHours < 24) {
+    return `${elapsedHours}시간 전`
+  }
+
+  const elapsedDays = Math.floor(elapsedHours / 24)
+  return `${elapsedDays}일 전`
 }

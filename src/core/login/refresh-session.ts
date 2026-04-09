@@ -79,7 +79,8 @@ export async function checkIfSessionAlive(): Promise<boolean> {
   })
   const text = await response.text()
 
-  const isLoginPage = !text.includes('https://ys.learnus.org/login/logout.php')
+  // Moodle markup can render this as absolute or relative URL.
+  const isLoginPage = !text.includes('/login/logout.php')
 
   if (isLoginPage) return false
 
