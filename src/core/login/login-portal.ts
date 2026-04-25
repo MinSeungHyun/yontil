@@ -80,3 +80,9 @@ async function fetch5() {
     signal: AbortSignal.timeout(5000),
   })
 }
+
+export async function refreshPortalSession() {
+  await fetch(`${PORTAL_ORIGIN}/com/cnst/PropCtr/findViewSession.do`, {
+    method: 'POST',
+  })
+}

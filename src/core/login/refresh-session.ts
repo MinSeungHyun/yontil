@@ -4,12 +4,11 @@ import {
   INFRA_URL_PATTERN,
   LEARNUS_ORIGIN,
   LEARNUS_URL_PATTERN,
-  PORTAL_ORIGIN,
   PORTAL_URL_PATTERN,
 } from '../constants'
 import { getLoginData } from './login-data-repository'
 import loginLearnUs from './login-learnus'
-import loginPortal from './login-portal'
+import loginPortal, { refreshPortalSession } from './login-portal'
 import {
   setIsSessionRefreshing,
   setLastSessionRefreshedTime,
@@ -83,8 +82,7 @@ export async function checkIfSessionAlive(): Promise<boolean> {
 
   if (isLoginPage) return false
 
-  // Refresh portal as well
-  await fetch(PORTAL_ORIGIN, { signal: AbortSignal.timeout(5000) })
+  await refreshPortalSession()
 
   return true
 }
