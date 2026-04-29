@@ -136,6 +136,8 @@ async function refreshTasks() {
 
 async function handleHideTask(taskId: string) {
   const hiddenTaskIds = await getHiddenTaskIds()
+  if (hiddenTaskIds.includes(taskId)) return
+
   await setHiddenTaskIds([...hiddenTaskIds, taskId])
 }
 
