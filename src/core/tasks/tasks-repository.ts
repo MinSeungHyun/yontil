@@ -65,7 +65,7 @@ export async function getCoursesData(): Promise<CoursesData> {
   ])
 }
 
-const HIDDEN_TASK_IDS_KEY = 'hiddenTaskIds'
+export const HIDDEN_TASK_IDS_KEY = 'hiddenTaskIds'
 
 interface HiddenTaskIds {
   [HIDDEN_TASK_IDS_KEY]: string[] | undefined

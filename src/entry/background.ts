@@ -22,6 +22,7 @@ import { startListeningNetworkStatus } from '../core/network-status'
 import {
   COURSES_DATA_KEY,
   COURSES_DATA_LAST_UPDATED_KEY,
+  HIDDEN_TASK_IDS_KEY,
   IS_TASKS_ENABLED_KEY,
   IS_TASKS_REFRESHING_KEY,
 } from '../core/tasks/tasks-repository'
@@ -113,6 +114,16 @@ chrome.storage.onChanged.addListener(async (changes) => {
       type: 'courses-data-updated',
       courses: changes[COURSES_DATA_KEY]?.newValue,
       lastUpdated: changes[COURSES_DATA_LAST_UPDATED_KEY]?.newValue,
+    })
+  }
+
+  if (HIDDEN_TASK_IDS_KEY in changes) {
+    const tabs = await chrome.tabs.query({ url: LEARNUS_URL_PATTERN })
+    const tabIds = tabs.map((tab) => tab.id).filter((id) => id !== undefined)
+
+    await sendMessageToTabs(tabIds, {
+      type: 'hidden-task-ids-updated',
+      hiddenTaskIds: changes[HIDDEN_TASK_IDS_KEY]?.newValue,
     })
   }
 })

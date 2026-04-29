@@ -29,4 +29,13 @@ export default class HideTaskElement {
 
     taskElement.querySelector('.actions')?.prepend(hideTaskButton)
   }
+
+  static removeAllHideTaskButtons() {
+    const hideTaskButtons = document.getElementsByClassName(
+      this.hideTaskButtonClassName
+    )
+    for (const hideTaskButton of hideTaskButtons) {
+      hideTaskButton.remove()
+    }
+  }
 }
