@@ -3,6 +3,7 @@ import fetchTasks, { TasksCourse } from '../../core/tasks/fetch-tasks'
 import TasksListElement from '../../core/tasks/tasks-list-element'
 import TasksRefreshElement from '../../core/tasks/tasks-refresh-element'
 import {
+  getCoursesData,
   getHiddenTaskIds,
   getIsTasksEnabled,
   getTasksInitialState,
@@ -62,7 +63,7 @@ function disposeTasks() {
   TasksListElement.dispose()
 }
 
-chrome.runtime.onMessage.addListener((message: TabMessage) => {
+chrome.runtime.onMessage.addListener(async (message: TabMessage) => {
   switch (message.type) {
     case 'tasks-enabled-updated':
       LearnusMainPageActionsElement.updateTasksSwitch({
@@ -82,13 +83,12 @@ chrome.runtime.onMessage.addListener((message: TabMessage) => {
 
     case 'courses-data-updated':
       if (message.courses) {
+        const hiddenTaskIds = await getHiddenTaskIds()
+
         TasksListElement.showTasks({
           courses: message.courses,
-          hiddenTaskIds: [], // TODO
-          onHideTask: (taskId) => {
-            // TODO
-            console.log(taskId)
-          },
+          hiddenTaskIds,
+          onHideTask: handleHideTask,
         })
       }
       if (message.lastUpdated) {
@@ -97,6 +97,17 @@ chrome.runtime.onMessage.addListener((message: TabMessage) => {
           lastUpdated: message.lastUpdated,
         })
       }
+      break
+
+    case 'hidden-task-ids-updated':
+      const { coursesData } = await getCoursesData()
+      if (!coursesData) break
+
+      TasksListElement.showTasks({
+        courses: coursesData,
+        hiddenTaskIds: message.hiddenTaskIds,
+        onHideTask: handleHideTask,
+      })
       break
   }
 })
