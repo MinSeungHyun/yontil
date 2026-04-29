@@ -3,9 +3,11 @@ import fetchTasks, { TasksCourse } from '../../core/tasks/fetch-tasks'
 import TasksListElement from '../../core/tasks/tasks-list-element'
 import TasksRefreshElement from '../../core/tasks/tasks-refresh-element'
 import {
+  getHiddenTaskIds,
   getIsTasksEnabled,
   getTasksInitialState,
   setCoursesData,
+  setHiddenTaskIds,
   setIsTasksEnabled,
   setIsTasksRefreshing,
 } from '../../core/tasks/tasks-repository'
@@ -30,7 +32,7 @@ async function main() {
 }
 
 async function initializeTasks() {
-  const { isTasksRefreshing, courses, coursesLastUpdated } =
+  const { isTasksRefreshing, courses, coursesLastUpdated, hiddenTaskIds } =
     await getTasksInitialState()
 
   TasksRefreshElement.initialize({
@@ -40,7 +42,11 @@ async function initializeTasks() {
   })
 
   if (courses) {
-    TasksListElement.showTasks(courses)
+    TasksListElement.showTasks({
+      courses,
+      hiddenTaskIds,
+      onHideTask: handleHideTask,
+    })
   }
 
   const isTasksNeedRefresh =
@@ -76,7 +82,14 @@ chrome.runtime.onMessage.addListener((message: TabMessage) => {
 
     case 'courses-data-updated':
       if (message.courses) {
-        TasksListElement.showTasks(message.courses)
+        TasksListElement.showTasks({
+          courses: message.courses,
+          hiddenTaskIds: [], // TODO
+          onHideTask: (taskId) => {
+            // TODO
+            console.log(taskId)
+          },
+        })
       }
       if (message.lastUpdated) {
         TasksRefreshElement.update({
@@ -119,6 +132,11 @@ async function refreshTasks() {
 
   await setIsTasksRefreshing(false)
   isTasksRefreshingInThisTab = false
+}
+
+async function handleHideTask(taskId: string) {
+  const hiddenTaskIds = await getHiddenTaskIds()
+  await setHiddenTaskIds([...hiddenTaskIds, taskId])
 }
 
 main()

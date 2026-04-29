@@ -1,3 +1,4 @@
+import HideTaskElement from './hide-task-element'
 import { Course } from './tasks-repository'
 
 export default class TasksListElement {
@@ -5,7 +6,15 @@ export default class TasksListElement {
 
   private constructor() {}
 
-  static showTasks(courses: Course[]) {
+  static showTasks({
+    courses,
+    hiddenTaskIds,
+    onHideTask,
+  }: {
+    courses: Course[]
+    hiddenTaskIds: string[]
+    onHideTask: (taskId: string) => void
+  }) {
     const courseElements = document.querySelectorAll('.my-course-lists li')
 
     for (const courseElement of courseElements) {
@@ -16,30 +25,34 @@ export default class TasksListElement {
       const course = courses.find((course) => course.courseUrl === courseUrl)
       if (!course) continue
 
-      this.showHtmlTasks(courseElement, course.tasks)
+      this.showHtmlTasks(courseElement, course.tasks, hiddenTaskIds, onHideTask)
     }
   }
 
-  private static showHtmlTasks(courseElement: Element, tasks: string[]) {
-    let existingTasksElement = courseElement.querySelector(
-      `.${this.tasksClassName}`
-    )
+  private static showHtmlTasks(
+    courseElement: Element,
+    tasks: string[],
+    hiddenTaskIds: string[],
+    onHideTask: (taskId: string) => void
+  ) {
+    let tasksElement = courseElement.querySelector(`.${this.tasksClassName}`)
 
     if (tasks.length === 0) {
-      existingTasksElement?.remove()
+      tasksElement?.remove()
       return
     }
 
-    if (existingTasksElement) {
-      existingTasksElement.innerHTML = tasks.join('')
-      return
+    if (!tasksElement) {
+      tasksElement = document.createElement('ul')
+      tasksElement.classList.add(this.tasksClassName)
+      courseElement.append(tasksElement)
     }
 
-    const newTasksElement = document.createElement('ul')
-    newTasksElement.classList.add(this.tasksClassName)
-    newTasksElement.innerHTML = tasks.join('')
+    tasksElement.innerHTML = tasks.join('')
 
-    courseElement.append(newTasksElement)
+    for (const taskElement of tasksElement.children) {
+      HideTaskElement.insertHideTaskButton({ taskElement, onHideTask })
+    }
   }
 
   static dispose() {
