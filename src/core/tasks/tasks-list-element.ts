@@ -48,7 +48,19 @@ export default class TasksListElement {
       courseElement.append(tasksElement)
     }
 
-    tasksElement.innerHTML = tasks.join('')
+    const taskElements: Element[] = []
+
+    for (const task of tasks) {
+      const taskTemplateElement = document.createElement('template')
+      taskTemplateElement.innerHTML = task
+      const taskElement = taskTemplateElement.content.children[0]
+
+      if (hiddenTaskIds.includes(taskElement.id)) continue
+
+      taskElements.push(taskElement)
+    }
+
+    tasksElement.replaceChildren(...taskElements)
 
     for (const taskElement of tasksElement.children) {
       HideTaskElement.insertHideTaskButton({
