@@ -8,6 +8,7 @@ export type TabMessage =
   | TasksRefreshingUpdatedMessage
   | CoursesDataUpdatedMessage
   | CancelRefreshingSessionMessage
+  | HiddenTaskIdsUpdatedMessage
 
 interface ShowRefreshingOverlayMessage {
   type: 'refreshing-overlay'
@@ -41,6 +42,11 @@ interface CoursesDataUpdatedMessage {
 
 interface CancelRefreshingSessionMessage {
   type: 'cancel-refreshing-session'
+}
+
+interface HiddenTaskIdsUpdatedMessage {
+  type: 'hidden-task-ids-updated'
+  hiddenTaskIds: string[]
 }
 
 export async function sendMessageToTab(tabId: number, message: TabMessage) {

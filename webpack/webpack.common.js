@@ -48,6 +48,12 @@ module.exports = {
       'content-scripts',
       'alrs-video-page.ts'
     ),
+    'content-scripts/learnus-course-page': path.join(
+      srcDir,
+      'entry',
+      'content-scripts',
+      'learnus-course-page.ts'
+    ),
   },
   output: {
     path: path.join(__dirname, '../dist/js'),

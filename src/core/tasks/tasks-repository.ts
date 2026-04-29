@@ -65,21 +65,46 @@ export async function getCoursesData(): Promise<CoursesData> {
   ])
 }
 
+export const HIDDEN_TASK_IDS_KEY = 'hiddenTaskIds'
+
+interface HiddenTaskIds {
+  [HIDDEN_TASK_IDS_KEY]: string[] | undefined
+}
+
+export async function setHiddenTaskIds(hiddenTaskIds: string[]): Promise<void> {
+  await chrome.storage.local.set<HiddenTaskIds>({
+    [HIDDEN_TASK_IDS_KEY]: hiddenTaskIds,
+  })
+}
+
+export async function getHiddenTaskIds(): Promise<string[]> {
+  const { hiddenTaskIds } =
+    await chrome.storage.local.get<HiddenTaskIds>(HIDDEN_TASK_IDS_KEY)
+  return hiddenTaskIds ?? []
+}
+
 interface TasksInitialState {
   isTasksRefreshing: boolean
   courses: Course[] | undefined
   coursesLastUpdated: number | undefined
+  hiddenTaskIds: string[]
 }
 
 export async function getTasksInitialState(): Promise<TasksInitialState> {
-  const state = await chrome.storage.local.get<IsTasksRefreshing & CoursesData>(
-    [IS_TASKS_REFRESHING_KEY, COURSES_DATA_KEY, COURSES_DATA_LAST_UPDATED_KEY]
-  )
+  const state = await chrome.storage.local.get<
+    IsTasksRefreshing & CoursesData & HiddenTaskIds
+  >([
+    IS_TASKS_REFRESHING_KEY,
+    COURSES_DATA_KEY,
+    COURSES_DATA_LAST_UPDATED_KEY,
+    HIDDEN_TASK_IDS_KEY,
+  ])
 
   return {
     isTasksRefreshing:
       state[IS_TASKS_REFRESHING_KEY] ?? IS_TASKS_REFRESHING_DEFAULT,
     courses: state[COURSES_DATA_KEY],
     coursesLastUpdated: state[COURSES_DATA_LAST_UPDATED_KEY],
+    hiddenTaskIds: state[HIDDEN_TASK_IDS_KEY] ?? [],
   }
 }

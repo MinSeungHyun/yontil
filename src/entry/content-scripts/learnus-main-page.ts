@@ -3,9 +3,12 @@ import fetchTasks, { TasksCourse } from '../../core/tasks/fetch-tasks'
 import TasksListElement from '../../core/tasks/tasks-list-element'
 import TasksRefreshElement from '../../core/tasks/tasks-refresh-element'
 import {
+  getCoursesData,
+  getHiddenTaskIds,
   getIsTasksEnabled,
   getTasksInitialState,
   setCoursesData,
+  setHiddenTaskIds,
   setIsTasksEnabled,
   setIsTasksRefreshing,
 } from '../../core/tasks/tasks-repository'
@@ -30,7 +33,7 @@ async function main() {
 }
 
 async function initializeTasks() {
-  const { isTasksRefreshing, courses, coursesLastUpdated } =
+  const { isTasksRefreshing, courses, coursesLastUpdated, hiddenTaskIds } =
     await getTasksInitialState()
 
   TasksRefreshElement.initialize({
@@ -40,7 +43,11 @@ async function initializeTasks() {
   })
 
   if (courses) {
-    TasksListElement.showTasks(courses)
+    TasksListElement.showTasks({
+      courses,
+      hiddenTaskIds,
+      onHideTask: handleHideTask,
+    })
   }
 
   const isTasksNeedRefresh =
@@ -56,7 +63,7 @@ function disposeTasks() {
   TasksListElement.dispose()
 }
 
-chrome.runtime.onMessage.addListener((message: TabMessage) => {
+chrome.runtime.onMessage.addListener(async (message: TabMessage) => {
   switch (message.type) {
     case 'tasks-enabled-updated':
       LearnusMainPageActionsElement.updateTasksSwitch({
@@ -76,7 +83,13 @@ chrome.runtime.onMessage.addListener((message: TabMessage) => {
 
     case 'courses-data-updated':
       if (message.courses) {
-        TasksListElement.showTasks(message.courses)
+        const hiddenTaskIds = await getHiddenTaskIds()
+
+        TasksListElement.showTasks({
+          courses: message.courses,
+          hiddenTaskIds,
+          onHideTask: handleHideTask,
+        })
       }
       if (message.lastUpdated) {
         TasksRefreshElement.update({
@@ -84,6 +97,17 @@ chrome.runtime.onMessage.addListener((message: TabMessage) => {
           lastUpdated: message.lastUpdated,
         })
       }
+      break
+
+    case 'hidden-task-ids-updated':
+      const { coursesData } = await getCoursesData()
+      if (!coursesData) break
+
+      TasksListElement.showTasks({
+        courses: coursesData,
+        hiddenTaskIds: message.hiddenTaskIds,
+        onHideTask: handleHideTask,
+      })
       break
   }
 })
@@ -119,6 +143,13 @@ async function refreshTasks() {
 
   await setIsTasksRefreshing(false)
   isTasksRefreshingInThisTab = false
+}
+
+async function handleHideTask(taskId: string) {
+  const hiddenTaskIds = await getHiddenTaskIds()
+  if (hiddenTaskIds.includes(taskId)) return
+
+  await setHiddenTaskIds([...hiddenTaskIds, taskId])
 }
 
 main()
