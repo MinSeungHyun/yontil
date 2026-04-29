@@ -287,25 +287,3 @@ Copied from https://ys.learnus.org/theme/styles.php/coursemosv2/1727860802_1/all
 .yontil-tasks .activity .contentafterlink p {
   margin: 0.5em 0;
 }
-
-.yontil-hide-task-button {
-  display: none;
-  cursor: pointer;
-  align-self: center;
-  font-size: 0.85rem;
-  padding-top: 0.15rem;
-  padding-right: 0.5rem;
-  color: #5f5f5f;
-}
-
-.yontil-hide-task-button:hover {
-  color: black;
-}
-
-.activity:hover .yontil-hide-task-button {
-  display: block;
-}
-
-.activity:hover:has(.yontil-hide-task-button) > div {
-  padding-right: 4rem;
-}

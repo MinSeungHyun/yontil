@@ -51,7 +51,10 @@ export default class TasksListElement {
     tasksElement.innerHTML = tasks.join('')
 
     for (const taskElement of tasksElement.children) {
-      HideTaskElement.insertHideTaskButton({ taskElement, onHideTask })
+      HideTaskElement.insertHideTaskButton({
+        taskElement,
+        onButtonClick: onHideTask,
+      })
     }
   }
 
