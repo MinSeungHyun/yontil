@@ -45,8 +45,15 @@ function createContainer(): HTMLDivElement {
 }
 
 function createPreviewVideo(container: HTMLElement): HTMLVideoElement {
+  const videoDataString = document
+    .getElementById('my-video_html5_api')
+    ?.getAttribute('data-setup-lazy')
+  const videoData = videoDataString ? JSON.parse(videoDataString) : null
+  const videoSrc = videoData?.sources?.src
+
+  if (!videoSrc) throw new Error('Video source not found')
+
   const previewVideo = document.createElement('video')
-  const videoSrc = document.getElementsByTagName('source')[0].src
 
   if (Hls.isSupported()) {
     const hls = new Hls({ maxBufferLength: 1 })
